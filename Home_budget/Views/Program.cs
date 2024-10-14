@@ -1,17 +1,16 @@
-﻿namespace Home_budget
+﻿namespace Home_budget.Views
 {
-    using Home_budget.Views;
-    using Spectre.Console;
     using Home_budget_library.Controllers;
-    using System.Net.Mail;
-    internal class Program
+    using Home_budget_library.Models;
+    using Spectre.Console;
+    public static class Program
     {
+        // -1 If not logged
+        public static int loggedUserID = -1;
         static void Main(string[] args)
         {
-            // Initialize Spectre.Console
-            AnsiConsole.Write(new FigletText("Home Budget")
-                .Centered()
-                .Color(Color.Aqua));
+  
+   
 
             // Create controller
             var userController = new UserController();
