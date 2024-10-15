@@ -9,6 +9,7 @@ namespace Home_budget_library.Controllers
         public UserController()
         {
             _context = new HomeBudgetDbContext();
+            _context.Users.Any();
         }
         /// <summary>
         /// Is validating login proccess 

@@ -1,7 +1,5 @@
 ﻿using Home_budget_library.Controllers;
 using Spectre.Console;
-using System.Diagnostics.Metrics;
-using System.Runtime.InteropServices;
 
 namespace Home_budget.Views
 {
@@ -25,14 +23,12 @@ namespace Home_budget.Views
                     " 2. Minimal username lenght is 6 characters"
                     )).Expand().Header("Instruction");
         }
-
         public void Show()
         {
-          
             AnsiConsole.Write(header);
             ShowLoginMenu();
         }
-        public void ShowLoginMenu()
+        private void ShowLoginMenu()
         {
 
             var option = AnsiConsole.Prompt(
@@ -50,10 +46,11 @@ namespace Home_budget.Views
                     CreateAccount();
                     break;
                 case "Exit":
+                    Environment.Exit(0);
                     return;
             }
         }
-        public void LoginAttempt()
+        private void LoginAttempt()
         {
 
             login_attempts++;
@@ -97,29 +94,41 @@ namespace Home_budget.Views
                 }
             }
         }
-        public void CreateAccount()
+        private void CreateAccount()
         {
             AnsiConsole.Write(instruction);
             StyleClass.WriteDivider("Username");
-            string UserName = AskUsername();
+            string username = AskUsername();
 
-            Panel controllPanel = StyleClass.AddPanel($"Your username [green]{UserName}[/]:");
+            Panel controllPanel = StyleClass.AddPanel($"Your username [green]{username}[/]:");
             StyleClass.ClearWrite([header, instruction, controllPanel]);
 
             StyleClass.WriteDivider("Password");
-            string Password = AskPassword();
-            controllPanel = StyleClass.AddPanel($"Your username: [green]{UserName}[/] \nYour password: [green]Correct[/]");
+            string password = AskPassword();
+            controllPanel = StyleClass.AddPanel($"Your username: [green]{username}[/] \nYour password: [green][/] :check_mark:");
             StyleClass.ClearWrite([header, instruction, controllPanel]);
 
 
             StyleClass.WriteDivider("RepatePassword");
-            AskSecondPassword(Password);
+            AskSecondPassword(password);
 
+            if (_controller.AddUser(username, password))
+            {
+                AnsiConsole.Clear();
+                AnsiConsole.Write(header);
+                AnsiConsole.Markup("[Green][Blink]Your account was successfully made[/][/]");
+            }
+            else
+            {
+                AnsiConsole.Clear();
+                AnsiConsole.Write(header);
+                AnsiConsole.Markup("[Green][Blink]Error encountered[/][/]");
+            }
 
 
         }
 
-        public string AskPassword()
+        private string AskPassword()
         {
             return AnsiConsole.Prompt(
                 new TextPrompt<string>("Enter your [green]password[/]:")
@@ -132,7 +141,7 @@ namespace Home_budget.Views
                         return correctPassword ? ValidationResult.Success() : ValidationResult.Error("[red]Incorrect password[/]");
                     }));
         }
-        public string AskSecondPassword(string password)
+        private string AskSecondPassword(string password)
         {
             return AnsiConsole.Prompt(
                 new TextPrompt<string>("Enter same [green]password[/]:")
@@ -146,7 +155,7 @@ namespace Home_budget.Views
                     }));
         }
 
-        public string AskUsername()
+        private string AskUsername()
         {
             return AnsiConsole.Prompt(
                 new TextPrompt<string>("Enter your [green]username[/]:")
@@ -170,6 +179,11 @@ namespace Home_budget.Views
                         }
                     }));
 
+        }
+
+        private void GoToMainMenu()
+        {
+            Program.loggedUserID = true;
         }
     }
 }
