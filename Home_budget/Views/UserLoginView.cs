@@ -59,11 +59,11 @@ namespace Home_budget.Views
             login_attempts++;
 
             // Ask for username
-            WriteDivider("Username");
+            StyleClass.WriteDivider("Username");
             var username = AnsiConsole.Ask<string>("Enter your [green]username[/]:");
 
             // Ask for password
-            WriteDivider("Password");
+            StyleClass.WriteDivider("Password");
             var password = AnsiConsole.Prompt(
                 new TextPrompt<string>("Enter your [green]password[/]:")
                     .PromptStyle("red")
@@ -98,17 +98,19 @@ namespace Home_budget.Views
         public void CreateAccount()
         {
             AnsiConsole.Write(instruction);
-            WriteDivider("Username");
+            StyleClass.WriteDivider("Username");
             string UserName = AskUsername();
 
-            Panel userPanel = AddPanel($"Your username [green]{UserName}[/]:");
-            AnsiConsole.Clear();
-            AnsiConsole.Write(header);
-            AnsiConsole.Write(instruction);
-            AnsiConsole.Write(userPanel);
-            WriteDivider("Password");
+            Panel controllPanel = StyleClass.AddPanel($"Your username [green]{UserName}[/]:");
+            StyleClass.ClearWrite([header, instruction, controllPanel]);
+
+            StyleClass.WriteDivider("Password");
             string Password = AskPassword();
-            WriteDivider("RepatePassword");
+            controllPanel = StyleClass.AddPanel($"Your username: [green]{UserName}[/] \nYour password: [green]Correct[/]");
+            StyleClass.ClearWrite([header, instruction, controllPanel]);
+
+
+            StyleClass.WriteDivider("RepatePassword");
             AskSecondPassword(Password);
 
 
@@ -171,18 +173,6 @@ namespace Home_budget.Views
                         }
                     }));
 
-        }
-        private Panel AddPanel(string message) 
-        {
-            Panel panel = new Panel(
-                new Markup(message)
-               );
-            return panel;
-        }
-        private static void WriteDivider(string text)
-        {
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Rule($"[yellow]{text}[/]").RuleStyle("grey").LeftJustified());
         }
     }
 }
