@@ -59,11 +59,11 @@ namespace Home_budget.Views
             login_attempts++;
 
             // Ask for username
-            WriteDivider("Username");
+            StyleClass.WriteDivider("Username");
             var username = AnsiConsole.Ask<string>("Enter your [green]username[/]:");
 
             // Ask for password
-            WriteDivider("Password");
+            StyleClass.WriteDivider("Password");
             var password = AnsiConsole.Prompt(
                 new TextPrompt<string>("Enter your [green]password[/]:")
                     .PromptStyle("red")
@@ -84,7 +84,9 @@ namespace Home_budget.Views
             {
                 if (login_attempts < MAX_ATTEMPS)
                 {
-                    AnsiConsole.MarkupLine($"[red]Login failed![/] Try Again, attemps remain: {MAX_ATTEMPS - login_attempts} \n");
+                    AnsiConsole.Clear();
+                    AnsiConsole.Write(header);
+                    AnsiConsole.MarkupLine($"\n[red]Login failed![/] Try Again, attemps remain: [rapidblink]{MAX_ATTEMPS - login_attempts}[/]");
                     LoginAttempt();
                 }
                 else
@@ -98,17 +100,19 @@ namespace Home_budget.Views
         public void CreateAccount()
         {
             AnsiConsole.Write(instruction);
-            WriteDivider("Username");
+            StyleClass.WriteDivider("Username");
             string UserName = AskUsername();
 
-            Panel userPanel = AddPanel($"Your username [green]{UserName}[/]:");
-            AnsiConsole.Clear();
-            AnsiConsole.Write(header);
-            AnsiConsole.Write(instruction);
-            AnsiConsole.Write(userPanel);
-            WriteDivider("Password");
+            Panel controllPanel = StyleClass.AddPanel($"Your username [green]{UserName}[/]:");
+            StyleClass.ClearWrite([header, instruction, controllPanel]);
+
+            StyleClass.WriteDivider("Password");
             string Password = AskPassword();
-            WriteDivider("RepatePassword");
+            controllPanel = StyleClass.AddPanel($"Your username: [green]{UserName}[/] \nYour password: [green]Correct[/]");
+            StyleClass.ClearWrite([header, instruction, controllPanel]);
+
+
+            StyleClass.WriteDivider("RepatePassword");
             AskSecondPassword(Password);
 
 
@@ -144,7 +148,6 @@ namespace Home_budget.Views
 
         public string AskUsername()
         {
-            int count = 0;
             return AnsiConsole.Prompt(
                 new TextPrompt<string>("Enter your [green]username[/]:")
                     .PromptStyle("green")
@@ -157,32 +160,16 @@ namespace Home_budget.Views
                             case 0:
                                 return ValidationResult.Success();
                             case 1:
-                                count++;
                                 return ValidationResult.Error("[red]Username needs to have more than 5 characters[/]");
                             case 2:
-                                count++;
                                 return ValidationResult.Error("[red]Username is not available[/]");
                             case 3:
-                                count++;
                                 return ValidationResult.Error("[red]Username needs to have more than 5 characters[/]\n[red]and also is not available[/]");
                             default:
-                                count++;
                                 return ValidationResult.Error("[red]Unknown error[/]");
                         }
                     }));
 
-        }
-        private Panel AddPanel(string message) 
-        {
-            Panel panel = new Panel(
-                new Markup(message)
-               );
-            return panel;
-        }
-        private static void WriteDivider(string text)
-        {
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Rule($"[yellow]{text}[/]").RuleStyle("grey").LeftJustified());
         }
     }
 }
