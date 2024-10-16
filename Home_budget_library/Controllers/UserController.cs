@@ -86,5 +86,11 @@ namespace Home_budget_library.Controllers
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public int GetUserID(string username)
+        {
+            User user = _context.Users.First(u => u.Name.ToLower().Equals(username.ToLower()));
+            return user.Id;
+        }
     }
 }

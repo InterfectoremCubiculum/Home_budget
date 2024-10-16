@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace Home_budget.Views
 {
-    public class IncomeView
+    public class ExpenseView
     {
         private readonly IncomeController _controller;
-        public IncomeView(IncomeController controller) {
+        public ExpenseView(IncomeController controller)
+        {
             _controller = controller;
         }
         public void OnStart()
         {
-            _controller.AddIncome(1, 21, new DateTime(), "dsdsadadasdasda sdsadsada sadsada", new List<string>() { "sadsa", "dsadasdsa" });
+
         }
     }
 }
