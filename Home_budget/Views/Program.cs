@@ -6,8 +6,12 @@
 
     public static class Program
     {
-        // -1 If not logged
-        public static bool loggedUserID = false;
+       static Panel header = new Panel(
+               new FigletText("Home Budget")
+               .Centered()
+               .Color(Color.Aqua)
+               );
+        public static int loggedUserID = 0;
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -18,12 +22,14 @@
             // Display the login view
             while (true)
             {
-                if (loggedUserID == false)
+                AnsiConsole.Clear();
+                AnsiConsole.Write(header);
+                if (loggedUserID == 0)
                 {
                     // Create controller
                     var userController = new UserController();
                     var loginView = new UserLoginView(userController);
-                    loginView.Show();
+                    loginView.OnStart();
                 }
                 else
                 {
@@ -31,24 +37,24 @@
                     new SelectionPrompt<string>()
                         .Title("Please select an option")
                         .PageSize(4)
-                        .AddChoices(new[] { "Login", "Create Account", "Exit" }));
+                        .AddChoices(new[] { "Manage your expenses", "Manage your revenue", "Log Out", "Exit" }));
                     switch (option)
                     {
                         case "Manage your expenses":
-                            new IncomeView();
+                            new IncomeView(new IncomeController());
                             break;
                         case "Manage your revenue":
-                            new IncomeView();
+                            new IncomeView(new IncomeController()).OnStart();
                             break;
                         case "Log Out":
-                            loggedUserID = false;
-                            new IncomeView();
+                            loggedUserID = 0;
                             break;
                         case "Exit":
                             return;
                     }
                 }
             }
+
         }
     }
 }

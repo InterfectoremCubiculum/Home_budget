@@ -6,10 +6,14 @@ namespace Home_budget.Views
     public class UserLoginView
     {
         private readonly UserController _controller;
+
         private int login_attempts = 0;
         private readonly static int MAX_ATTEMPS = 3;
+
+        //Panels for UserLoginView
         private readonly Panel header;
         private readonly Panel instruction;
+
         public UserLoginView(UserController controller)
         {
             _controller = controller;
@@ -23,8 +27,9 @@ namespace Home_budget.Views
                     " 2. Minimal username lenght is 6 characters"
                     )).Expand().Header("Instruction");
         }
-        public void Show()
+        public void OnStart()
         {
+            AnsiConsole.Clear();
             AnsiConsole.Write(header);
             ShowLoginMenu();
         }
@@ -71,11 +76,13 @@ namespace Home_budget.Views
 
             if (isValid)
             {
+                GoToMainMenu(username);
                 AnsiConsole.Clear();
                 AnsiConsole.Write(new FigletText("Welcome")
                     .Centered()
                     .Color(Color.Green));
-                AnsiConsole.MarkupLine("[green]Login successful![/]");
+                AnsiConsole.MarkupLine("[green]Login successful![/]\nPress any key to go futher");
+                Console.ReadKey(true);
             }
             else
             {
@@ -88,7 +95,7 @@ namespace Home_budget.Views
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[grey]Press any key to close the terminal...[/]");
+                    AnsiConsole.MarkupLine("[red]Too many attemps.[/] Press any key to close the terminal...");
                     Console.ReadKey(true);
                     Environment.Exit(0);
                 }
@@ -100,12 +107,12 @@ namespace Home_budget.Views
             StyleClass.WriteDivider("Username");
             string username = AskUsername();
 
-            Panel controllPanel = StyleClass.AddPanel($"Your username [green]{username}[/]:");
+            Panel controllPanel = StyleClass.AddPanel($"Your username [green]{username}[/]");
             StyleClass.ClearWrite([header, instruction, controllPanel]);
 
             StyleClass.WriteDivider("Password");
             string password = AskPassword();
-            controllPanel = StyleClass.AddPanel($"Your username: [green]{username}[/] \nYour password: [green][/] :check_mark:");
+            controllPanel = StyleClass.AddPanel($"Your username: [green]{username}[/] \nYour password [green][/] :check_mark:");
             StyleClass.ClearWrite([header, instruction, controllPanel]);
 
 
@@ -114,15 +121,18 @@ namespace Home_budget.Views
 
             if (_controller.AddUser(username, password))
             {
+                GoToMainMenu(username);
                 AnsiConsole.Clear();
                 AnsiConsole.Write(header);
-                AnsiConsole.Markup("[Green][Blink]Your account was successfully made[/][/]");
+                AnsiConsole.Markup("[Green][Blink]Your account was successfully made[/][/]\nPress any key to go futher");
+                Console.ReadKey(true);
             }
             else
             {
                 AnsiConsole.Clear();
                 AnsiConsole.Write(header);
-                AnsiConsole.Markup("[Green][Blink]Error encountered[/][/]");
+                AnsiConsole.Markup("[Green][Blink]Error encountered[/][/]\nPress any key to close the terminal...");
+                Console.ReadKey(true);
             }
 
 
@@ -181,9 +191,9 @@ namespace Home_budget.Views
 
         }
 
-        private void GoToMainMenu()
+        private void GoToMainMenu(string username)
         {
-            Program.loggedUserID = true;
+            Program.loggedUserID = _controller.GetUserID( username);
         }
     }
 }
