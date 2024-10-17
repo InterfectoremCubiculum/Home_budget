@@ -14,7 +14,7 @@ namespace Home_budget_library.Models
         public int UserID { get; set; }
         public decimal Value { get; set; }
 
-        public DateTime date { get; set; }
+        public DateOnly date { get; set; }
 
         public string Description { get; set;}
     }

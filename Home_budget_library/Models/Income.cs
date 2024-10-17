@@ -13,9 +13,11 @@ namespace Home_budget_library.Models
         [Key]
         public int Id { get; set; }
         public int UserID {get; set; }
+        public string Title { get; set; }
+
         public decimal Value { get; set; }
 
-        public DateTime date { get; set; }
+        public DateOnly date { get; set; }
 
         public string Description { get; set; }
     }

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Home_budget.Views
 {
-    public class ExpenseView
+    public class ExpenseView : TransactionView
     {
-        private readonly IncomeController _controller;
-        public ExpenseView(IncomeController controller)
+        private readonly ExpenseController _controller;
+        public ExpenseView(ExpenseController controller)
         {
             _controller = controller;
         }

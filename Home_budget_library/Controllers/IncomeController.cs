@@ -5,14 +5,17 @@ namespace Home_budget_library.Controllers
     public class IncomeController
     {
         private readonly HomeBudgetDbContext _context;
+        public readonly CategoryController _categoryRepo;
         public IncomeController()
         {
             _context = new HomeBudgetDbContext();
+            _categoryRepo = new CategoryController(_context);
         }
-        public void AddIncome(int userID, decimal value, DateTime date, string description, List<string>? categories)
+        public void Add(int userID, string title, decimal value, DateOnly date, string description, List<string>? categories)
         {
             Income income = new Income()
             {
+                Title = title,
                 UserID = userID,
                 Value = value,
                 date = date,
