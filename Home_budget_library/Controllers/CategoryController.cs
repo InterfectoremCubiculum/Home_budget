@@ -41,9 +41,9 @@ namespace Home_budget_library.Controllers
             return saved > 0 ? true : false;
         }
 
-        public List<Category> GetAll()
+        public Dictionary<int, string> GetAll()
         {
-            var categories = _context.Categories.ToList();
+            var categories = _context.Categories.ToDictionary(category => category.Id, category => category.Name);
             return categories;
         }
         public List<string> GetAllNames()
@@ -51,6 +51,16 @@ namespace Home_budget_library.Controllers
             var categories = _context.Categories
                                      .Select(c => c.Name)
                                      .ToList(); return categories;
+        }
+        public List<string> GetByIncomeID(int incomeID) {
+            var categories = _context.IncomeCategories
+                .Where(ic => ic.IncomeId == incomeID)
+                .Join(_context.Categories,
+                    ic => ic.CategoryId,
+                    c => c.Id,
+                    (ic, c) => c.Name)
+                .ToList();
+            return categories;
         }
     }
 }

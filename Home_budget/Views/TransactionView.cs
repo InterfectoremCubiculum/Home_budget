@@ -10,9 +10,9 @@ namespace Home_budget.Views
 {
     public class TransactionView
     {
-        protected List<string>  ChoiceCategories(List <string> ListNames)
+        protected Dictionary<int, string> SelectedCategories(Dictionary <int, string> categoriesDictionary)
         {
-            var category = AnsiConsole.Prompt(
+            var selectedNames = AnsiConsole.Prompt(
             new MultiSelectionPrompt<string>()
             .Title("Choice categories")
             .NotRequired()
@@ -21,36 +21,18 @@ namespace Home_budget.Views
             .InstructionsText(
                 "[grey](Press [blue]<space>[/] to toggle a category, " +
                 "[green]<enter>[/] to accept)[/]")
-            .AddChoices(ListNames)
+            .AddChoices(categoriesDictionary.Values)
             );
-            return category;
+            var selectedCategories = categoriesDictionary
+                .Where(pair => selectedNames.Contains(pair.Value))
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            return selectedCategories;
         }
 
-        protected void Menu()
-        {
-            var option = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Please select an option")
-                    .PageSize(7)
-                    .AddChoices(new[] { "Add", "Delete", "Copy and Edit", "Edit", "View All", "Search", "Main Menu" }));
 
-            switch (option)
-            {
-                case "Add":
-                    break;
-                case "Create":
-                    break;
-                case "Copy and Edit":
-                    break;
-                case "Edit":
-                    break;
-                case "View All":
-                    break;
-                case "Search":
-                    break;
-                case "Main Menu":
-                    return;
-            }
+        protected void Add() 
+        {
         }
     }
 }

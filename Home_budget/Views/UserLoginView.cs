@@ -17,43 +17,95 @@ namespace Home_budget.Views
         public UserLoginView(UserController controller)
         {
             _controller = controller;
-            header = new Panel(
-               new FigletText("Home Budget\nLogin")
-               .Centered()
-               .Color(Color.Aqua)
-               );
+            header = StyleClass.HEADER_2;
+
             instruction = new Panel(new Markup(
                     " 1. Minimal password lenght is 8 characters\n" +
                     " 2. Minimal username lenght is 6 characters"
-                    )).Expand().Header("Instruction");
+                    )).Expand().Header("Instruction")
+                    .BorderColor(StyleClass.BORDER_COLOR);
         }
         public void OnStart()
         {
             AnsiConsole.Clear();
-            AnsiConsole.Write(header);
+            //AnsiConsole.Write(header);
             ShowLoginMenu();
         }
         private void ShowLoginMenu()
         {
+            AnsiConsole.Cursor.Hide();
+            //Panel empty = new Panel("")
+            Layout layout = new Layout();
 
-            var option = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Please select an option")
-                    .PageSize(3)
-                    .AddChoices(new[] { "Login", "Create Account", "Exit" }));
+            layout.SplitRows(
+                    new Layout("Header").Ratio(11),
+                    new Layout("Body").Ratio(12)
+                        .SplitColumns(
+                        new Layout("Left").Ratio(5),
+                        new Layout("Mid").Ratio(3)
+                        .SplitRows(
+                            new Layout("Top"),
+                            new Layout("Center"),
+                            new Layout("Bottom")
+                            ),
+                        new Layout("Right").Ratio(5)
+                        ));
+            layout["Header"].Update(header);
+            layout["Top"].Update(
+                StyleClass.AddMenuPanel(" Login\n--->(1)<---").Expand()
+                ).Size(4);
+            layout["Center"].Update(
+                StyleClass.AddMenuPanel(" Create Account\n--->(2)<---").Expand()
+                ).Size(4);
+            layout["Bottom"].Update(
+                StyleClass.AddMenuPanel(" Exit\n--->(ESC)<---").Expand()
+                ).Size(4);
+            layout["Left"].Update(
+                new Text("")
+            );
+            layout["Right"].Update(
+              new Text("")
+            );
+            AnsiConsole.Write(layout);
 
-            switch (option)
+            ConsoleKey key;
+
+            do
             {
-                case "Login":
-                    LoginAttempt();
-                    break;
-                case "Create Account":
-                    CreateAccount();
-                    break;
-                case "Exit":
-                    Environment.Exit(0);
-                    return;
+                key = Console.ReadKey(true).Key;
+                switch (key)
+                {
+                    case ConsoleKey.D1:
+                        LoginAttempt();
+                        break;
+                    case ConsoleKey.D2:
+                        CreateAccount();
+                        break;
+                    case ConsoleKey.Escape:
+                        Environment.Exit(0);
+                        return;
+                }
             }
+            while (key != ConsoleKey.Escape);
+            /*
+                        var option = AnsiConsole.Prompt(
+                            new SelectionPrompt<string>()
+                                .Title("Please select an option")
+                                .PageSize(3)
+                                .AddChoices(new[] { "Login", "Create Account", "Exit" }));
+
+                        switch (option)
+                        {
+                            case "Login":
+                                LoginAttempt();
+                                break;
+                            case "Create Account":
+                                CreateAccount();
+                                break;
+                            case "Exit":
+                                Environment.Exit(0);
+                                return;
+                        }*/
         }
         private void LoginAttempt()
         {
@@ -193,7 +245,7 @@ namespace Home_budget.Views
 
         private void GoToMainMenu(string username)
         {
-            Program.loggedUserID = _controller.GetUserID( username);
+            Program.loggedUserID = _controller.GetUserID(username);
         }
     }
 }

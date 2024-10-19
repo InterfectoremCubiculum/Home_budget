@@ -6,14 +6,16 @@
 
     public static class Program
     {
+      
        static Panel header = new Panel(
                new FigletText("Home Budget")
                .Centered()
-               .Color(Color.Aqua)
+               .Color(new Color(11, 11, 11))
                );
         public static int loggedUserID = 0;
         static void Main(string[] args)
         {
+            AnsiConsole.Background = new Color(28, 28, 38);
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.UTF8;
 

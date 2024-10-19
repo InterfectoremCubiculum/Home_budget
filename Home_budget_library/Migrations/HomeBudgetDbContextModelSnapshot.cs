@@ -57,8 +57,8 @@ namespace Home_budget_library.Migrations
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("date")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
@@ -79,7 +79,7 @@ namespace Home_budget_library.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ExpenseCategory");
+                    b.ToTable("ExpenseCategories");
                 });
 
             modelBuilder.Entity("Home_budget_library.Models.Income", b =>
@@ -94,14 +94,18 @@ namespace Home_budget_library.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("date")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
@@ -122,7 +126,7 @@ namespace Home_budget_library.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("IncomeCategory");
+                    b.ToTable("IncomeCategories");
                 });
 
             modelBuilder.Entity("Home_budget_library.Models.User", b =>
