@@ -1,40 +1,56 @@
 ﻿using Home_budget_library.Controllers;
 using Spectre.Console;
+using System.Drawing;
 
 namespace Home_budget.Views
 {
     public class UserLoginView
     {
+        
         private readonly UserController _controller;
 
-        private int login_attempts = 0;
-        private readonly static int MAX_ATTEMPS = 3;
+        
+        private int login_attempts = 0; //Count all login attempts 
+        private readonly static int MAX_ATTEMPS = 3; //Max number of attemps to log
 
         //Panels for UserLoginView
         private readonly Panel header;
         private readonly Panel instruction;
-
+      
+        /// <summary>
+        /// Is creating view panels and saving userController taken from parameter
+        /// </summary>
+        /// <param name="controller">It is controller which will communicate with view</param>
         public UserLoginView(UserController controller)
         {
             _controller = controller;
-            header = StyleClass.HEADER_2;
 
+            header = StyleClass.HEADER_2;
             instruction = new Panel(new Markup(
-                    " 1. Minimal password lenght is 8 characters\n" +
-                    " 2. Minimal username lenght is 6 characters"
+                    $"[{StyleClass.T_COL_STR}] 1. Minimal password lenght is 8 characters\n" +
+                    " 2. Minimal username lenght is 6 characters[/]"
                     )).Expand().Header("Instruction")
-                    .BorderColor(StyleClass.BORDER_COLOR);
+                    .BorderColor(StyleClass.BORDER_COLOR)
+                    .RoundedBorder();
         }
+
+        /// <summary>
+        /// Clears the console and displays the menu
+        /// </summary>
         public void OnStart()
         {
             AnsiConsole.Clear();
-            //AnsiConsole.Write(header);
             ShowLoginMenu();
         }
+
+        /// <summary>
+        /// Creates a view layout of menu and listens for buttons.
+        /// Operate selected buttons to navigate through the menu
+        /// </summary>
+       
         private void ShowLoginMenu()
         {
             AnsiConsole.Cursor.Hide();
-            //Panel empty = new Panel("")
             Layout layout = new Layout();
 
             layout.SplitRows(
@@ -76,51 +92,43 @@ namespace Home_budget.Views
                 switch (key)
                 {
                     case ConsoleKey.D1:
+                        AnsiConsole.Clear();
+                        AnsiConsole.Write(header);
+                        AnsiConsole.Cursor.Show();
                         LoginAttempt();
-                        break;
+                        return;
                     case ConsoleKey.D2:
+                        AnsiConsole.Clear();
+                        AnsiConsole.Write(header);
+                        AnsiConsole.Cursor.Show();
                         CreateAccount();
-                        break;
+                        return;
                     case ConsoleKey.Escape:
                         Environment.Exit(0);
                         return;
                 }
             }
             while (key != ConsoleKey.Escape);
-            /*
-                        var option = AnsiConsole.Prompt(
-                            new SelectionPrompt<string>()
-                                .Title("Please select an option")
-                                .PageSize(3)
-                                .AddChoices(new[] { "Login", "Create Account", "Exit" }));
-
-                        switch (option)
-                        {
-                            case "Login":
-                                LoginAttempt();
-                                break;
-                            case "Create Account":
-                                CreateAccount();
-                                break;
-                            case "Exit":
-                                Environment.Exit(0);
-                                return;
-                        }*/
         }
+
+        /// <summary>
+        /// Is responsible for logging the user, 
+        /// Counts the number of attempts and interacts with the user.
+        /// </summary>
         private void LoginAttempt()
         {
-
             login_attempts++;
 
             // Ask for username
             StyleClass.WriteDivider("Username");
-            var username = AnsiConsole.Ask<string>("Enter your [green]username[/]:");
+            
+            var username = AnsiConsole.Ask<string>($"[{StyleClass.T_COL_STR}]Enter your [{StyleClass.T_HL}]username[/]:[/]");
 
             // Ask for password
             StyleClass.WriteDivider("Password");
             var password = AnsiConsole.Prompt(
-                new TextPrompt<string>("Enter your [green]password[/]:")
-                    .PromptStyle("red")
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your [{StyleClass.T_HL}]password[/]:[/]")
+                    .PromptStyle($"{StyleClass.T_HL_ERR_STR}")
                     .Secret());
 
             // Validate user credentials
@@ -129,12 +137,10 @@ namespace Home_budget.Views
             if (isValid)
             {
                 GoToMainMenu(username);
-                AnsiConsole.Clear();
-                AnsiConsole.Write(new FigletText("Welcome")
-                    .Centered()
-                    .Color(Color.Green));
-                AnsiConsole.MarkupLine("[green]Login successful![/]\nPress any key to go futher");
-                Console.ReadKey(true);
+                //AnsiConsole.Clear();
+                //AnsiConsole.Write(new FigletText("Welcome")
+                //    .Centered()
+                //    .Color(Color.Green));
             }
             else
             {
@@ -142,87 +148,116 @@ namespace Home_budget.Views
                 {
                     AnsiConsole.Clear();
                     AnsiConsole.Write(header);
-                    AnsiConsole.MarkupLine($"\n[red]Login failed![/] Try Again, attemps remain: [rapidblink]{MAX_ATTEMPS - login_attempts}[/]");
+                    AnsiConsole.MarkupLine($"\n[{StyleClass.T_HL_ERR_STR}]Login failed![/] Try Again, attemps remain: [rapidblink]{MAX_ATTEMPS - login_attempts}[/]");
                     LoginAttempt();
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[red]Too many attemps.[/] Press any key to close the terminal...");
+                    AnsiConsole.Clear();
+                    AnsiConsole.Write(header);
+                    AnsiConsole.MarkupLine($"\n[{StyleClass.T_HL_ERR_STR}]Too many attemps.[/] Press any key to close the terminal...");
                     Console.ReadKey(true);
                     Environment.Exit(0);
                 }
             }
         }
+
+
+        /// <summary>
+        /// Manages the creation of a new account
+        /// </summary>
         private void CreateAccount()
         {
+            // Show instruction 
             AnsiConsole.Write(instruction);
+
+            // Ask for username
             StyleClass.WriteDivider("Username");
             string username = AskUsername();
 
-            Panel controllPanel = StyleClass.AddPanel($"Your username [green]{username}[/]");
+            Panel controllPanel = StyleClass.AddPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/]");
             StyleClass.ClearWrite([header, instruction, controllPanel]);
 
+            // Ask for password
             StyleClass.WriteDivider("Password");
             string password = AskPassword();
-            controllPanel = StyleClass.AddPanel($"Your username: [green]{username}[/] \nYour password [green][/] :check_mark:");
+            controllPanel = StyleClass.AddPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/] \n[{StyleClass.T_COL_STR}]Your password[/] [{StyleClass.T_HL}][/] :check_mark:");
             StyleClass.ClearWrite([header, instruction, controllPanel]);
 
-
-            StyleClass.WriteDivider("RepatePassword");
+            // Ask for repeat password
+            StyleClass.WriteDivider("Repeat Password");
             AskSecondPassword(password);
 
+            //Iinforms about successful or unsuccessful account creation
             if (_controller.AddUser(username, password))
             {
                 GoToMainMenu(username);
                 AnsiConsole.Clear();
-                AnsiConsole.Write(header);
-                AnsiConsole.Markup("[Green][Blink]Your account was successfully made[/][/]\nPress any key to go futher");
-                Console.ReadKey(true);
+                //AnsiConsole.Write(header);
+                //AnsiConsole.Markup("[darkolivegreen1]\n[Blink]Your account was successfully made[/][/]\nPress any key to go futher");
+                //Console.ReadKey(true);
             }
             else
             {
                 AnsiConsole.Clear();
                 AnsiConsole.Write(header);
-                AnsiConsole.Markup("[Green][Blink]Error encountered[/][/]\nPress any key to close the terminal...");
+                AnsiConsole.Markup($"[{StyleClass.T_HL}]\n[Blink]Error encountered[/][/]\nPress any key to close the terminal...");
                 Console.ReadKey(true);
             }
 
 
         }
 
+
+        /// <summary>
+        /// This a prompt that validate input date. Handle password entry
+        /// </summary>
+        /// <returns>
+        /// Its return password if all is correct, if not it ask for password
+        /// </returns>
         private string AskPassword()
         {
             return AnsiConsole.Prompt(
-                new TextPrompt<string>("Enter your [green]password[/]:")
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your[/] [{StyleClass.T_HL}]password[/]:")
                     .Secret()
-                    .PromptStyle("green")
-                    .ValidationErrorMessage("[red]Password is incorrect[/]")
+                    .ValidationErrorMessage($"[{StyleClass.T_HL_ERR_STR}]Password is incorrect[/]")
                     .Validate(password =>
                     {
                         var correctPassword = _controller.Create_User_Check_Password(password);
-                        return correctPassword ? ValidationResult.Success() : ValidationResult.Error("[red]Incorrect password[/]");
-                    }));
-        }
-        private string AskSecondPassword(string password)
-        {
-            return AnsiConsole.Prompt(
-                new TextPrompt<string>("Enter same [green]password[/]:")
-                    .Secret()
-                    .PromptStyle("green")
-                    .ValidationErrorMessage("[red]Password is incorrect[/]")
-                    .Validate(password2 =>
-                    {
-                        var correctPassword = password.Equals(password2);
-                        return correctPassword ? ValidationResult.Success() : ValidationResult.Error("[red]Password is not the same[/]");
+                        return correctPassword ? ValidationResult.Success() : ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Incorrect password[/]");
                     }));
         }
 
+        /// <summary>
+        /// This a prompt that validate input date. Handle repeat password entry
+        /// </summary>
+        /// <returns>
+        /// Its return password if all is correct, if not it ask for password
+        /// </returns>
+        private string AskSecondPassword(string password)
+        {
+            return AnsiConsole.Prompt(
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter same[/] [{StyleClass.T_HL}]password[/]:")
+                    .Secret()
+                    .ValidationErrorMessage($"[{StyleClass.T_HL_ERR_STR}]Password is incorrect[/]")
+                    .Validate(password2 =>
+                    {
+                        var correctPassword = password.Equals(password2);
+                        return correctPassword ? ValidationResult.Success() : ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Password is not the same[/]");
+                    }));
+        }
+
+        /// <summary>
+        /// This a prompt that validate input date. Handle username entry
+        /// </summary>
+        /// <returns>
+        /// Its return username if all is correct, if not it ask for username
+        /// </returns>
         private string AskUsername()
         {
             return AnsiConsole.Prompt(
-                new TextPrompt<string>("Enter your [green]username[/]:")
-                    .PromptStyle("green")
-                    .ValidationErrorMessage("[red]Username is incorrect[/]")
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your[/] [{StyleClass.T_HL}]username[/]:")
+                    .ValidationErrorMessage($"[{StyleClass.T_HL_ERR_STR}]Username is incorrect[/]")
                     .Validate(username =>
                     {
                         var checkingValue = _controller.Create_User_Check_UserName(username);
@@ -231,13 +266,13 @@ namespace Home_budget.Views
                             case 0:
                                 return ValidationResult.Success();
                             case 1:
-                                return ValidationResult.Error("[red]Username needs to have more than 5 characters[/]");
+                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username needs to have more than 5 characters[/]");
                             case 2:
-                                return ValidationResult.Error("[red]Username is not available[/]");
+                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username is not available[/]");
                             case 3:
-                                return ValidationResult.Error("[red]Username needs to have more than 5 characters[/]\n[red]and also is not available[/]");
+                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username needs to have more than 5 characters[/]\n[{StyleClass.T_HL_ERR_STR}]and also is not available[/]");
                             default:
-                                return ValidationResult.Error("[red]Unknown error[/]");
+                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Unknown error[/]");
                         }
                     }));
 
