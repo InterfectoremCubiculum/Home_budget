@@ -6,6 +6,8 @@ namespace Home_budget_library.Controllers
     {
         private readonly HomeBudgetDbContext _context;
         public readonly CategoryController _categoryRepo;
+
+        public List<int> incomesList { get; private set; }
         public IncomeController()
         {
             _context = new HomeBudgetDbContext();
@@ -41,7 +43,7 @@ namespace Home_budget_library.Controllers
             }
             _context.SaveChanges();
         }
-        public void DeleteMany(List<int> indexes, int UserId, bool isThisIncomesId = false)
+        public void DeleteMany(List<int> indexes, int userId, bool isThisIncomesId = false)
         {
             if (isThisIncomesId)
             {
@@ -54,13 +56,16 @@ namespace Home_budget_library.Controllers
             }
             else
             {
-                var incomes = GetAll(UserId);
+                var incomes = GetAll(userId);
+                var incomesList = incomes.Keys.ToList();
+
                 var incomesToRemove = indexes
-                    .Where(i => i > 0 && i <= incomes.Count)
-                    .Select(i => incomes[i-1]);
+                    .Where(i => i > 0 && i <= incomesList.Count)
+                    .Select(i => incomesList[i - 1]);
 
                 _context.Incomes.RemoveRange(incomesToRemove);
                 _context.SaveChanges();
+
             }
         }
 
@@ -70,13 +75,21 @@ namespace Home_budget_library.Controllers
             return saved > 0 ? true : false;
         }
 
-        public List<Income> GetAll(int userID)
+        public Dictionary<Income, int> GetAll(int userID)
         {
-            return _context.Incomes.Where(x => x.UserID == userID).ToList();
+            var allIncomes = _context.Incomes
+                 .Where(x => x.UserID == userID)
+                 .ToList();
+
+            return allIncomes.Select((income, index) => new { income, relativeValue = index + 1 })
+                             .ToDictionary(x => x.income, x => x.relativeValue);
         }
-        public List<int> GetAllId(int userID)
+
+        public Dictionary<Income, int> Search(string title, int userID)
         {
-            return _context.Incomes.Where(x => x.UserID == userID).Select(x => x.Id).ToList();
+            var allIncomes = GetAll(userID);
+            return allIncomes.Where(kvp => kvp.Key.Title.Contains(title))
+                             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
         public Income Get(int Id)
         {

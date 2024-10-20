@@ -8,7 +8,7 @@
     {
 
         static Panel header = StyleClass.HEADER_1;
-        public static int loggedUserID = 1;
+        public static int loggedUserID = 0;
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -50,6 +50,7 @@
                 }
                 else
                 {
+                    AnsiConsole.Cursor.Hide();
                     AnsiConsole.Write(layout);
                     key = Console.ReadKey(true).Key;
                     switch (key)

@@ -1,5 +1,4 @@
 ﻿using Home_budget_library.Models;
-using Microsoft.EntityFrameworkCore;
 namespace Home_budget_library.Controllers
 {
 
@@ -23,11 +22,9 @@ namespace Home_budget_library.Controllers
         public bool ValidateLogin(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-            {
                 return false;
-            }
-            var user = _context.Users.FirstOrDefault(u => u.Name == username && u.Password == password);
-            return user != null;
+
+            return _context.Users.Any(u => u.Name == username && u.Password == password);
         }
 
         /// <summary>
@@ -40,19 +37,18 @@ namespace Home_budget_library.Controllers
         /// 2 - Username is not available
         /// 3 - Username is too short and not available
         /// </returns>
-        public int Create_User_Check_UserName(string username) 
+        public int Create_User_Check_UserName(string username)
         {
             int errorValue = 0;
             if (username.Length < 6)
-            {
                 errorValue += 1;
-            }
-            if(IsUser(username) == true)
-            {
+
+            if (IsUser(username) == true)
                 errorValue += 2;
-            }
+
             return errorValue;
         }
+
         /// <summary>
         /// Check password if is correct to create new account
         /// </summary>
@@ -61,36 +57,35 @@ namespace Home_budget_library.Controllers
         /// True - It`s correct
         /// False - It`s not correct (Too short password)
         /// </returns>
-        public bool Create_User_Check_Password(string password) {
-            if (password.Length < 8) {
-                return false;
-            }
-            else return true;
-        }
-        public bool IsUser(string username) 
+        public bool Create_User_Check_Password(string password)
         {
-            bool userExists = _context.Users.Any(u => u.Name.ToLower().Equals(username.ToLower()));
-            return userExists;
+            return password.Length >= 8;
         }
-        public bool AddUser(string username, string password) 
+        public bool IsUser(string username)
         {
-            User user = new User();
-            user.Name = username;
-            user.Password = password;
+            return _context.Users.Any(u => u.Name.ToLower().Equals(username.ToLower()));
+        }
+        public bool AddUser(string username, string password)
+        {
+            var user = new User
+            {
+                Name = username,
+                Password = password
+            };
             _context.Users.Add(user);
             return Save();
         }
 
         public bool Save()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return _context.SaveChanges() > 0;
         }
 
         public int GetUserID(string username)
         {
-            User user = _context.Users.First(u => u.Name.ToLower().Equals(username.ToLower()));
-            return user.Id;
+            var user = _context.Users.FirstOrDefault(u => u.Name.ToLower() == username.ToLower());
+            return user?.Id ?? 0; // return 0 if user not found
+
         }
     }
 }

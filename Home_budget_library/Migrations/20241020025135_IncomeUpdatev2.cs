@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Home_budget_library.Migrations
 {
     /// <inheritdoc />
-    public partial class migration2041 : Migration
+    public partial class IncomeUpdatev2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

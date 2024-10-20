@@ -1,22 +1,20 @@
 ﻿using Home_budget_library.Controllers;
 using Spectre.Console;
-using System.Drawing;
 
 namespace Home_budget.Views
 {
     public class UserLoginView
     {
-        
+
         private readonly UserController _controller;
 
-        
         private int login_attempts = 0; //Count all login attempts 
         private readonly static int MAX_ATTEMPS = 3; //Max number of attemps to log
 
         //Panels for UserLoginView
         private readonly Panel header;
         private readonly Panel instruction;
-      
+
         /// <summary>
         /// Is creating view panels and saving userController taken from parameter
         /// </summary>
@@ -26,14 +24,8 @@ namespace Home_budget.Views
             _controller = controller;
 
             header = StyleClass.HEADER_2;
-            instruction = new Panel(new Markup(
-                    $"[{StyleClass.T_COL_STR}] 1. Minimal password lenght is 8 characters\n" +
-                    " 2. Minimal username lenght is 6 characters[/]"
-                    )).Expand().Header("Instruction")
-                    .BorderColor(StyleClass.BORDER_COLOR)
-                    .RoundedBorder();
+            instruction = CreateInstructionPanel();
         }
-
         /// <summary>
         /// Clears the console and displays the menu
         /// </summary>
@@ -43,45 +35,51 @@ namespace Home_budget.Views
             ShowLoginMenu();
         }
 
+        private Panel CreateInstructionPanel()
+        {
+            return new Panel(new Markup(
+                $"[{StyleClass.T_COL_STR}] 1. Minimal password lenght is 8 characters\n" +
+                " 2. Minimal username lenght is 6 characters[/]"))
+                .Expand()
+                .Header("Instruction")
+                .BorderColor(StyleClass.BORDER_COLOR)
+                .RoundedBorder();
+        }
+        private Panel CreateMenuPanel(string text)
+        {
+            return StyleClass.AddMenuPanel(text).Expand();
+        }
+
         /// <summary>
         /// Creates a view layout of menu and listens for buttons.
         /// Operate selected buttons to navigate through the menu
         /// </summary>
-       
+
         private void ShowLoginMenu()
         {
             AnsiConsole.Cursor.Hide();
-            Layout layout = new Layout();
-
-            layout.SplitRows(
+            Layout layout = new Layout()
+                .SplitRows(
                     new Layout("Header").Ratio(11),
                     new Layout("Body").Ratio(12)
                         .SplitColumns(
-                        new Layout("Left").Ratio(5),
-                        new Layout("Mid").Ratio(3)
-                        .SplitRows(
-                            new Layout("Top"),
-                            new Layout("Center"),
-                            new Layout("Bottom")
+                            new Layout("Left").Ratio(5),
+                            new Layout("Mid").Ratio(3)
+                                .SplitRows(
+                                    new Layout("Top"),
+                                    new Layout("Center"),
+                                    new Layout("Bottom")
                             ),
                         new Layout("Right").Ratio(5)
-                        ));
+                    ));
+
             layout["Header"].Update(header);
-            layout["Top"].Update(
-                StyleClass.AddMenuPanel(" Login\n--->(1)<---").Expand()
-                ).Size(4);
-            layout["Center"].Update(
-                StyleClass.AddMenuPanel(" Create Account\n--->(2)<---").Expand()
-                ).Size(4);
-            layout["Bottom"].Update(
-                StyleClass.AddMenuPanel(" Exit\n--->(ESC)<---").Expand()
-                ).Size(4);
-            layout["Left"].Update(
-                new Text("")
-            );
-            layout["Right"].Update(
-              new Text("")
-            );
+            layout["Top"].Update(CreateMenuPanel(" Login\n--->(1)<---")).Size(4);
+            layout["Center"].Update(CreateMenuPanel(" Create Account\n--->(2)<---")).Size(4);
+            layout["Bottom"].Update(CreateMenuPanel(" Exit\n--->(ESC)<---")).Size(4);
+            layout["Left"].Update(new Text(""));
+            layout["Right"].Update(new Text(""));
+
             AnsiConsole.Write(layout);
 
             ConsoleKey key;
@@ -89,17 +87,15 @@ namespace Home_budget.Views
             do
             {
                 key = Console.ReadKey(true).Key;
+                AnsiConsole.Clear();
+                AnsiConsole.Write(header);
                 switch (key)
                 {
                     case ConsoleKey.D1:
-                        AnsiConsole.Clear();
-                        AnsiConsole.Write(header);
                         AnsiConsole.Cursor.Show();
                         LoginAttempt();
                         return;
                     case ConsoleKey.D2:
-                        AnsiConsole.Clear();
-                        AnsiConsole.Write(header);
                         AnsiConsole.Cursor.Show();
                         CreateAccount();
                         return;
@@ -121,7 +117,7 @@ namespace Home_budget.Views
 
             // Ask for username
             StyleClass.WriteDivider("Username");
-            
+
             var username = AnsiConsole.Ask<string>($"[{StyleClass.T_COL_STR}]Enter your [{StyleClass.T_HL}]username[/]:[/]");
 
             // Ask for password
@@ -132,36 +128,32 @@ namespace Home_budget.Views
                     .Secret());
 
             // Validate user credentials
-            var isValid = _controller.ValidateLogin(username, password);
-
-            if (isValid)
+            if (_controller.ValidateLogin(username, password))
             {
                 GoToMainMenu(username);
-                //AnsiConsole.Clear();
-                //AnsiConsole.Write(new FigletText("Welcome")
-                //    .Centered()
-                //    .Color(Color.Green));
             }
             else
             {
-                if (login_attempts < MAX_ATTEMPS)
-                {
-                    AnsiConsole.Clear();
-                    AnsiConsole.Write(header);
-                    AnsiConsole.MarkupLine($"\n[{StyleClass.T_HL_ERR_STR}]Login failed![/] Try Again, attemps remain: [rapidblink]{MAX_ATTEMPS - login_attempts}[/]");
-                    LoginAttempt();
-                }
-                else
-                {
-                    AnsiConsole.Clear();
-                    AnsiConsole.Write(header);
-                    AnsiConsole.MarkupLine($"\n[{StyleClass.T_HL_ERR_STR}]Too many attemps.[/] Press any key to close the terminal...");
-                    Console.ReadKey(true);
-                    Environment.Exit(0);
-                }
+                HandleFailedLogin();
             }
         }
 
+        private void HandleFailedLogin()
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(header);
+            if (login_attempts < MAX_ATTEMPS)
+            {
+                AnsiConsole.MarkupLine($"\n[{StyleClass.T_HL_ERR_STR}]Login failed![/] Try Again, attemps remain: [rapidblink]{MAX_ATTEMPS - login_attempts}[/]");
+                LoginAttempt();
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"\n[{StyleClass.T_HL_ERR_STR}]Too many attemps.[/] Press any key to close the terminal...");
+                Console.ReadKey(true);
+                Environment.Exit(0);
+            }
+        }
 
         /// <summary>
         /// Manages the creation of a new account
@@ -174,15 +166,14 @@ namespace Home_budget.Views
             // Ask for username
             StyleClass.WriteDivider("Username");
             string username = AskUsername();
+            UpdateControlPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/]");
 
-            Panel controllPanel = StyleClass.AddPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/]");
-            StyleClass.ClearWrite([header, instruction, controllPanel]);
 
             // Ask for password
             StyleClass.WriteDivider("Password");
             string password = AskPassword();
-            controllPanel = StyleClass.AddPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/] \n[{StyleClass.T_COL_STR}]Your password[/] [{StyleClass.T_HL}][/] :check_mark:");
-            StyleClass.ClearWrite([header, instruction, controllPanel]);
+            UpdateControlPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/] \n[{StyleClass.T_COL_STR}]Your password[/] [{StyleClass.T_HL}][/] :check_mark:");
+
 
             // Ask for repeat password
             StyleClass.WriteDivider("Repeat Password");
@@ -193,19 +184,12 @@ namespace Home_budget.Views
             {
                 GoToMainMenu(username);
                 AnsiConsole.Clear();
-                //AnsiConsole.Write(header);
-                //AnsiConsole.Markup("[darkolivegreen1]\n[Blink]Your account was successfully made[/][/]\nPress any key to go futher");
-                //Console.ReadKey(true);
             }
             else
             {
-                AnsiConsole.Clear();
-                AnsiConsole.Write(header);
                 AnsiConsole.Markup($"[{StyleClass.T_HL}]\n[Blink]Error encountered[/][/]\nPress any key to close the terminal...");
                 Console.ReadKey(true);
             }
-
-
         }
 
 
@@ -275,12 +259,19 @@ namespace Home_budget.Views
                                 return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Unknown error[/]");
                         }
                     }));
-
         }
 
         private void GoToMainMenu(string username)
         {
             Program.loggedUserID = _controller.GetUserID(username);
+            AnsiConsole.Clear();
         }
+
+        private void UpdateControlPanel(string content)
+        {
+            Panel controlPanel = StyleClass.AddPanel(content);
+            StyleClass.ClearWrite([header, instruction, controlPanel]);
+        }
+        
     }
 }

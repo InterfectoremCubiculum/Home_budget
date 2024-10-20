@@ -73,6 +73,8 @@ namespace Home_budget.Views
 
                         break;
                     case ConsoleKey.D6: //Search
+                        AnsiConsole.Cursor.Show();
+                        Search();
                         break;
                     case ConsoleKey.D7: //Main Menu
                         AnsiConsole.Clear();
@@ -83,7 +85,17 @@ namespace Home_budget.Views
 
         private void Edit()
         {
-            throw new NotImplementedException();
+            StyleClass.WriteDivider("Title");
+        }           
+        private void Search() 
+        {
+            StyleClass.WriteDivider("Search by title");
+            var title = AnsiConsole.Ask<string>($"[{StyleClass.T_COL_STR}]Write [{StyleClass.T_HL}]Title[/][/]:");
+            var result = _controller.Search(title, Program.loggedUserID);
+            AnsiConsole.Clear();
+            AnsiConsole.Write(navPanel);
+            WriteToTable(result, int.MaxValue);
+            AnsiConsole.Write(navPanel);
         }
 
         private void Copy()
@@ -116,20 +128,22 @@ namespace Home_budget.Views
         {
             var idToDelete = AnsiConsole.Ask<string>($"[{StyleClass.T_COL_STR}]Write the ID of the items you want to remove. e.g. 1-5, 8, 11-13[/]:");
             var ids = ParseIdRanges(idToDelete);
-            _controller.DeleteMany(ids, Program.loggedUserID, false);
+            _controller.DeleteMany(ids, Program.loggedUserID);
 
         }
-        private void ViewAll(int? value)
+        private void ViewAll(int? maxLength)
         {
-            int maxLength;
-            if (value is null)
+            var listOfIncomes = _controller.GetAll(Program.loggedUserID);
+            if (maxLength is null)
             {
                 maxLength = int.MaxValue;
             }
-            else
-            {
-                maxLength = (int)value;
-            }
+
+            WriteToTable(listOfIncomes, (int)maxLength);
+        }
+
+        private void WriteToTable(Dictionary<Income,int> listOfIncomes, int maxLength)
+        {
             var table = new Table().Centered().BorderColor(StyleClass.BORDER_COLOR).RoundedBorder();
             AnsiConsole.Live(table)
                 .AutoClear(false)
@@ -144,30 +158,21 @@ namespace Home_budget.Views
                        $"[bold {Color.Silver}]Description[/]");
                     context.Refresh();
 
-                    int counter = 0;
 
-                    foreach (Income i in _controller.GetAll(Program.loggedUserID))
+                    foreach (var item in listOfIncomes)
                     {
-                        counter++;
-                        var categories = _controller._categoryRepo.GetByIncomeID(i.Id);
+                        var categories = _controller._categoryRepo.GetByIncomeID(item.Key.Id);
                         var categoriesString = String.Join(", ", categories);
                         table.AddRow(
-                            $"[{Color.Purple}]{counter}[/]",
-                            $"[{Color.Yellow}]{SafeSubstring(i.Title, 0, maxLength)}[/]",
-                            $"[{Color.Lime}]{i.Value}[/]",
-                            $"[{Color.DarkMagenta}]{i.date}[/]",
+                            $"[{Color.Purple}]{item.Value}[/]",
+                            $"[{Color.Yellow}]{SafeSubstring(item.Key.Title, 0, maxLength)}[/]",
+                            $"[{Color.Lime}]{item.Key.Value}[/]",
+                            $"[{Color.DarkMagenta}]{item.Key.date}[/]",
                             $"[{Color.Aqua}]{SafeSubstring(categoriesString, 0, maxLength)}[/]",
-                            $"[{Color.Silver}]{SafeSubstring(i.Description, 0, maxLength)}[/]");
+                            $"[{Color.Silver}]{SafeSubstring(item.Key.Description, 0, maxLength)}[/]");
                         context.Refresh();
                     }
                 });
-        }
-        private void ViewAllByFiltr()
-        {
-
-        }
-        private void SortIncomes()
-        {
         }
 
         protected Dictionary<int, string> SelectedCategories()

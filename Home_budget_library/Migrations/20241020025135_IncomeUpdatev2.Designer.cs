@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Home_budget_library.Migrations
 {
     [DbContext(typeof(HomeBudgetDbContext))]
-    [Migration("20241017185451_migration2041")]
-    partial class migration2041
+    [Migration("20241020025135_IncomeUpdatev2")]
+    partial class IncomeUpdatev2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
