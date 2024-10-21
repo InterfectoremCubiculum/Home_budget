@@ -118,12 +118,12 @@ namespace Home_budget.Views
             // Ask for username
             StyleClass.WriteDivider("Username");
 
-            var username = AnsiConsole.Ask<string>($"[{StyleClass.T_COL_STR}]Enter your [{StyleClass.T_HL}]username[/]:[/]");
+            var username = AnsiConsole.Ask<string>($"[{StyleClass.T_COL_STR}]Enter your [{StyleClass.T_HL_STR}]username[/]:[/]");
 
             // Ask for password
             StyleClass.WriteDivider("Password");
             var password = AnsiConsole.Prompt(
-                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your [{StyleClass.T_HL}]password[/]:[/]")
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your [{StyleClass.T_HL_STR}]password[/]:[/]")
                     .PromptStyle($"{StyleClass.T_HL_ERR_STR}")
                     .Secret());
 
@@ -166,13 +166,13 @@ namespace Home_budget.Views
             // Ask for username
             StyleClass.WriteDivider("Username");
             string username = AskUsername();
-            UpdateControlPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/]");
+            UpdateControlPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL_STR}]{username}[/]");
 
 
             // Ask for password
             StyleClass.WriteDivider("Password");
             string password = AskPassword();
-            UpdateControlPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL}]{username}[/] \n[{StyleClass.T_COL_STR}]Your password[/] [{StyleClass.T_HL}][/] :check_mark:");
+            UpdateControlPanel($"[{StyleClass.T_COL_STR}]Your username[/] [{StyleClass.T_HL_STR}]{username}[/] \n[{StyleClass.T_COL_STR}]Your password[/] [{StyleClass.T_HL_STR}][/] :check_mark:");
 
 
             // Ask for repeat password
@@ -187,7 +187,7 @@ namespace Home_budget.Views
             }
             else
             {
-                AnsiConsole.Markup($"[{StyleClass.T_HL}]\n[Blink]Error encountered[/][/]\nPress any key to close the terminal...");
+                AnsiConsole.Markup($"[{StyleClass.T_HL_STR}]\n[Blink]Error encountered[/][/]\nPress any key to close the terminal...");
                 Console.ReadKey(true);
             }
         }
@@ -202,7 +202,7 @@ namespace Home_budget.Views
         private string AskPassword()
         {
             return AnsiConsole.Prompt(
-                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your[/] [{StyleClass.T_HL}]password[/]:")
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your[/] [{StyleClass.T_HL_STR}]password[/]:")
                     .Secret()
                     .ValidationErrorMessage($"[{StyleClass.T_HL_ERR_STR}]Password is incorrect[/]")
                     .Validate(password =>
@@ -221,7 +221,7 @@ namespace Home_budget.Views
         private string AskSecondPassword(string password)
         {
             return AnsiConsole.Prompt(
-                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter same[/] [{StyleClass.T_HL}]password[/]:")
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter same[/] [{StyleClass.T_HL_STR}]password[/]:")
                     .Secret()
                     .ValidationErrorMessage($"[{StyleClass.T_HL_ERR_STR}]Password is incorrect[/]")
                     .Validate(password2 =>
@@ -240,7 +240,7 @@ namespace Home_budget.Views
         private string AskUsername()
         {
             return AnsiConsole.Prompt(
-                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your[/] [{StyleClass.T_HL}]username[/]:")
+                new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter your[/] [{StyleClass.T_HL_STR}]username[/]:")
                     .ValidationErrorMessage($"[{StyleClass.T_HL_ERR_STR}]Username is incorrect[/]")
                     .Validate(username =>
                     {

@@ -39,50 +39,7 @@ namespace Home_budget_library.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Home_budget_library.Models.Expense", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateOnly>("date")
-                        .HasColumnType("date");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("Expenses");
-                });
-
-            modelBuilder.Entity("Home_budget_library.Models.ExpenseCategory", b =>
-                {
-                    b.Property<int>("ExpenseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ExpenseId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("ExpenseCategories");
-                });
-
-            modelBuilder.Entity("Home_budget_library.Models.Income", b =>
+            modelBuilder.Entity("Home_budget_library.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,22 +68,22 @@ namespace Home_budget_library.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Incomes");
+                    b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Home_budget_library.Models.IncomeCategory", b =>
+            modelBuilder.Entity("Home_budget_library.Models.TransactionCategory", b =>
                 {
-                    b.Property<int>("IncomeId")
+                    b.Property<int>("TransactionId")
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.HasKey("IncomeId", "CategoryId");
+                    b.HasKey("TransactionId", "CategoryId");
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("IncomeCategories");
+                    b.ToTable("TransactionCategories");
                 });
 
             modelBuilder.Entity("Home_budget_library.Models.User", b =>
@@ -150,7 +107,7 @@ namespace Home_budget_library.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Home_budget_library.Models.Expense", b =>
+            modelBuilder.Entity("Home_budget_library.Models.Transaction", b =>
                 {
                     b.HasOne("Home_budget_library.Models.User", null)
                         .WithMany()
@@ -159,7 +116,7 @@ namespace Home_budget_library.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Home_budget_library.Models.ExpenseCategory", b =>
+            modelBuilder.Entity("Home_budget_library.Models.TransactionCategory", b =>
                 {
                     b.HasOne("Home_budget_library.Models.Category", null)
                         .WithMany()
@@ -167,33 +124,9 @@ namespace Home_budget_library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Home_budget_library.Models.Expense", null)
+                    b.HasOne("Home_budget_library.Models.Transaction", null)
                         .WithMany()
-                        .HasForeignKey("ExpenseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Home_budget_library.Models.Income", b =>
-                {
-                    b.HasOne("Home_budget_library.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Home_budget_library.Models.IncomeCategory", b =>
-                {
-                    b.HasOne("Home_budget_library.Models.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Home_budget_library.Models.Income", null)
-                        .WithMany()
-                        .HasForeignKey("IncomeId")
+                        .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Home_budget_library.Models
 {
-    public class ExpenseCategory
+    public class TransactionCategory
     {
-        public int ExpenseId { get; set; }
+        public int TransactionId { get; set; }
         public int CategoryId { get; set; }
     }
 }

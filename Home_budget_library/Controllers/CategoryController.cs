@@ -19,7 +19,7 @@ namespace Home_budget_library.Controllers
             return _context.Categories.Any(u => u.Name.ToLower().Equals(categoryName.ToLower()));
         }
 
-        public bool addCategory(string categoryName)
+        public bool AddCategory(string categoryName)
         {
             Category category = new Category() { Name = categoryName };
             _context.Categories.Add(category);
@@ -52,15 +52,23 @@ namespace Home_budget_library.Controllers
                                      .Select(c => c.Name)
                                      .ToList(); return categories;
         }
-        public List<string> GetByIncomeID(int incomeID) {
-            var categories = _context.IncomeCategories
-                .Where(ic => ic.IncomeId == incomeID)
+        public List<string> GetByTransactionID(int transactionID)
+        {
+            var categories = _context.TransactionCategories
+                .Where(ic => ic.TransactionId == transactionID)
                 .Join(_context.Categories,
                     ic => ic.CategoryId,
                     c => c.Id,
                     (ic, c) => c.Name)
                 .ToList();
             return categories;
+        }
+        public void DeleteByTransactionID(int transactionID)
+        {
+            var categories = _context.TransactionCategories
+                .Where(ic => ic.TransactionId == transactionID)
+                .ToList();
+            _context.TransactionCategories.RemoveRange(categories);
         }
     }
 }

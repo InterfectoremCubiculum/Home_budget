@@ -21,7 +21,7 @@
                     new Layout("Body").Ratio(4)
                     .SplitRows(
                         new Layout("Top")
-                        .SplitColumns(new Layout("LeftTop"), new Layout("MidTop"), new Layout("RightTop")
+                        .SplitColumns(new Layout("LeftTop"), new Layout("RightTop")
                             ),
                         new Layout("Bottom")
                         .SplitColumns(new Layout("LeftBottom"), new Layout("RightBottom")
@@ -29,10 +29,9 @@
                         )
                     );
             layout["Header"].Update(header);
-            layout["LeftTop"].Update(StyleClass.AddMenuPanel("Manage expenses\n--->(1)<---[tan]\n[/]").Expand());
-            layout["MidTop"].Update(StyleClass.AddMenuPanel("Manage revenues\n--->(2)<---").Expand());
-            layout["RightTop"].Update(StyleClass.AddMenuPanel("See statistics\n--->(3)<---").Expand());
-            layout["LeftBottom"].Update(StyleClass.AddMenuPanel("Log Out\n--->(4)<---").Expand());
+            layout["LeftTop"].Update(StyleClass.AddMenuPanel("Manage Transactions\n--->(1)<---[tan]\n[/]").Expand());
+            layout["RightTop"].Update(StyleClass.AddMenuPanel("See Statistics\n--->(2)<---").Expand());
+            layout["LeftBottom"].Update(StyleClass.AddMenuPanel("Log Out\n--->(3)<---").Expand());
             layout["RightBottom"].Update(StyleClass.AddMenuPanel("Exit\n--->(ESC)<---").Expand());
 
 
@@ -58,18 +57,13 @@
                         case ConsoleKey.D1:
                             AnsiConsole.Clear();
                             AnsiConsole.Cursor.Show();
-                            new ExpenseView(new ExpenseController());
+                            new TransactionView(new TransactionController()).OnStart();
                             break;
                         case ConsoleKey.D2:
                             AnsiConsole.Clear();
                             AnsiConsole.Cursor.Show();
-                            new IncomeView(new IncomeController()).OnStart();
                             break;
                         case ConsoleKey.D3:
-                            AnsiConsole.Clear();
-                            AnsiConsole.Cursor.Show();
-                            break;
-                        case ConsoleKey.D4:
                             AnsiConsole.Clear();
                             AnsiConsole.Cursor.Show();
                             loggedUserID = 0;
