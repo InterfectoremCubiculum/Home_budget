@@ -6,8 +6,8 @@ namespace Home_budget.Views
 {
     public class TransactionView
     {
-        private TransactionController _controller;
-        private Panel navPanel;
+        private readonly TransactionController _controller;
+        private readonly Panel navPanel;
         public TransactionView(TransactionController controller)
         {
             _controller = controller;
@@ -88,8 +88,7 @@ namespace Home_budget.Views
         {
             var title = StyleClass.AskForInput<string>("Search by Title", "Write", "Title");
             var result = _controller.Search(title, Program.loggedUserID);
-            AnsiConsole.Clear();
-            AnsiConsole.Write(navPanel);
+            StyleClass.ClearWrite([navPanel]);
             WriteToTable(result, int.MaxValue);
             AnsiConsole.Write(navPanel);
         }
@@ -97,6 +96,8 @@ namespace Home_budget.Views
         {
             var transactionId = StyleClass.AskForInput<int>("Id", "Enter the ID of the transaction you want to copy", "");
             var copiedTransaction = _controller.Copy(Program.loggedUserID, transactionId);
+            StyleClass.ClearWrite([navPanel]);
+            AnsiConsole.Write(StyleClass.AddMenuPanel("Insert new data or click <ENTER> to leave it unchanged"));
             Edit(copiedTransaction);
         }
         protected void EditView()

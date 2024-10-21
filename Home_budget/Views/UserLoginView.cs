@@ -140,8 +140,7 @@ namespace Home_budget.Views
 
         private void HandleFailedLogin()
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(header);
+            StyleClass.ClearWrite([header]);
             if (login_attempts < MAX_ATTEMPS)
             {
                 AnsiConsole.MarkupLine($"\n[{StyleClass.T_HL_ERR_STR}]Login failed![/] Try Again, attemps remain: [rapidblink]{MAX_ATTEMPS - login_attempts}[/]");

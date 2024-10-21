@@ -7,7 +7,7 @@
     public static class Program
     {
 
-        static Panel header = StyleClass.HEADER_1;
+        public static readonly Panel header = StyleClass.HEADER_1;
         public static int loggedUserID = 0;
         static void Main(string[] args)
         {
@@ -56,12 +56,11 @@
                     {
                         case ConsoleKey.D1:
                             AnsiConsole.Clear();
-                            AnsiConsole.Cursor.Show();
                             new TransactionView(new TransactionController()).OnStart();
                             break;
                         case ConsoleKey.D2:
                             AnsiConsole.Clear();
-                            AnsiConsole.Cursor.Show();
+                            new StatisticsView(new StatisticsController()).OnStart();
                             break;
                         case ConsoleKey.D3:
                             AnsiConsole.Clear();
