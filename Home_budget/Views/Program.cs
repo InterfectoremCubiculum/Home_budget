@@ -70,6 +70,9 @@
                         case ConsoleKey.Escape:
                             Environment.Exit(0);
                             return;
+                        default:
+                            AnsiConsole.Clear();
+                            break;
                     }
                 }
             }

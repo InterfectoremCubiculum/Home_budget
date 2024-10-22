@@ -98,7 +98,7 @@ namespace Home_budget_library.Controllers
         public Dictionary<int, Transaction> Search(string title, int userID)
         {
             return GetAll(userID)
-                .Where(kvp => kvp.Value.Title.Contains(title))
+                .Where(kvp => kvp.Value.Title.ToLower().Contains(title.ToLower()))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
