@@ -106,8 +106,6 @@ namespace Home_budget.Views
             AnsiConsole.Clear();
 
             var transaction = _controller.Get(Program.loggedUserID, transactionId);
-            var categories = _controller._categoryRepo.GetByTransactionID(transaction.Id);
-            var categoriesString = String.Join(", ", categories);
 
             AnsiConsole.Write(navPanel);
             AnsiConsole.Write(StyleClass.AddMenuPanel("Insert new data or click <ENTER> to leave it unchanged"));
@@ -132,10 +130,7 @@ namespace Home_budget.Views
         protected void ViewAll(int? maxLength)
         {
             var listOfTransaction = _controller.GetAll(Program.loggedUserID);
-            if (maxLength is null)
-            {
-                maxLength = int.MaxValue;
-            }
+            maxLength ??= int.MaxValue;
 
             WriteToTable(listOfTransaction, (int)maxLength);
         }
@@ -199,7 +194,7 @@ namespace Home_budget.Views
                 return str.Substring(startIndex, length);
             }
             else
-                return str.Substring(startIndex, length) + "...";
+                return string.Concat(str.AsSpan(startIndex, length), "...");
         }
 
         private static List<int> ParseIdRanges(string input)

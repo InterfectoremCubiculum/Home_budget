@@ -247,19 +247,14 @@ namespace Home_budget.Views
                     .Validate(username =>
                     {
                         var checkingValue = _controller.Create_User_Check_UserName(username);
-                        switch (checkingValue)
+                        return checkingValue switch
                         {
-                            case 0:
-                                return ValidationResult.Success();
-                            case 1:
-                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username needs to have more than 5 characters[/]");
-                            case 2:
-                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username is not available[/]");
-                            case 3:
-                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username needs to have more than 5 characters[/]\n[{StyleClass.T_HL_ERR_STR}]and also is not available[/]");
-                            default:
-                                return ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Unknown error[/]");
-                        }
+                            0 => ValidationResult.Success(),
+                            1 => ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username needs to have more than 5 characters[/]"),
+                            2 => ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username is not available[/]"),
+                            3 => ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Username needs to have more than 5 characters[/]\n[{StyleClass.T_HL_ERR_STR}]and also is not available[/]"),
+                            _ => ValidationResult.Error($"[{StyleClass.T_HL_ERR_STR}]Unknown error[/]"),
+                        };
                     }));
         }
 
