@@ -15,11 +15,12 @@ namespace Home_budget_graphic
     /// </summary>
     public partial class MainWindow : Window
     {
-        public List<SampleItem> SampleList { get; set; }
+        public List<NavItem> NavList { get; set; }
         public MainWindow()
         {
 
             InitializeComponent();
+            MainFrame.Navigate(new HomePage());
 
             var paletteHelper = new PaletteHelper();
             var theme = paletteHelper.GetTheme();
@@ -45,55 +46,55 @@ namespace Home_budget_graphic
                     => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
             }
             DataContext = this;
-            SampleList = new()
+            NavList = new()
             {
-                new SampleItem
-                {
-                    Title = "Payment",
-                    SelectedIcon = PackIconKind.CreditCard,
-                    UnselectedIcon = PackIconKind.CreditCardOutline,
-                },
-                new SampleItem
+                new NavItem
                 {
                     Title = "Home",
                     SelectedIcon = PackIconKind.Home,
                     UnselectedIcon = PackIconKind.HomeOutline,
                 },
-                new SampleItem
+                new NavItem
                 {
-                    Title = "Special",
-                    SelectedIcon = PackIconKind.Star,
-                    UnselectedIcon = PackIconKind.StarOutline,
+                    Title = "Transactions",
+                    SelectedIcon = PackIconKind.AccountCash,
+                    UnselectedIcon = PackIconKind.AccountCashOutline,
                 },
-                new SampleItem
+                new NavItem
                 {
-                    Title = "Shared",
-                    SelectedIcon = PackIconKind.Users,
-                    UnselectedIcon = PackIconKind.UsersOutline,
+                    Title = "Search",
+                    SelectedIcon = PackIconKind.CardSearch,
+                    UnselectedIcon = PackIconKind.CardSearchOutline,
                 },
-                new SampleItem
+                new NavItem
                 {
-                    Title = "Files",
-                    SelectedIcon = PackIconKind.Folder,
-                    UnselectedIcon = PackIconKind.FolderOutline,
+                    Title = "Calendar",
+                    SelectedIcon = PackIconKind.CalendarMonth,
+                    UnselectedIcon = PackIconKind.CalendarMonthOutline,
                 },
-                new SampleItem
+                new NavItem
                 {
-                    Title = "Library",
-                    SelectedIcon = PackIconKind.Bookshelf,
-                    UnselectedIcon = PackIconKind.Bookshelf,
+                    Title = "Chart Bar",
+                    SelectedIcon = PackIconKind.ChartBar,
+                    UnselectedIcon = PackIconKind.ChartBar,
                 },
             };
         }
 
 
-        private async void MenuPopupButton_OnClick(object sender, RoutedEventArgs e) { }
+        private async void MenuPopupButton_OnClick(object sender, RoutedEventArgs e) 
+        {
+        }
         private async void MenuToggleButton_OnClick(object sender, RoutedEventArgs e) { }
         private async void Button_Click(object sender, RoutedEventArgs e) { }
         private async void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
             => ModifyTheme(DarkModeToggleButton.IsChecked == true);
         private async void FlowDirectionButton_Click(object sender, RoutedEventArgs e) { }
-
+        private async void LogOut_Click(object sender, RoutedEventArgs e) 
+        {
+            //new LoginWindow().Show();
+            this.Close();
+        }
 
         private static void ModifyTheme(bool isDarkTheme)
         {
@@ -103,5 +104,6 @@ namespace Home_budget_graphic
             theme.SetBaseTheme(isDarkTheme ? BaseTheme.Dark : BaseTheme.Light);
             paletteHelper.SetTheme(theme);
         }
+
     }
 }
