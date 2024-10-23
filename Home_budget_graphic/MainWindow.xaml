@@ -8,42 +8,99 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="Home_budget_graphic.MainWindow"
         xmlns:domain="clr-namespace:Home_budget_graphic.Domain"
         mc:Ignorable="d"
-            Title="MainWindow" Height="450" Width="800" WindowState="Maximized">  
+            Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
     <Grid>
         <DockPanel>
-            <Grid Width="80" Background="{DynamicResource MaterialDesignCardBackground}" HorizontalAlignment="Left">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <ToggleButton
-                    Margin="0,32,0,0"
-                    Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-                <Button
-                    Grid.Row="1"
-                    Width="56"
-                    Height="56"
-                    Margin="0,10,0,40"
-                    materialDesign:ButtonAssist.CornerRadius="16"
-                    Background="{DynamicResource SecondaryHueMidBrush}"
-                    BorderThickness="0"
-                    Foreground="{DynamicResource SecondaryHueMidBrushForeground}"
-                    Style="{StaticResource MaterialDesignFlatMidBgButton}">
-                    <materialDesign:PackIcon
-                        Width="24" 
-                        Height="24"
-                        Kind="PencilOutline" />
-                </Button>
+            <materialDesign:ColorZone 
+                    
+                Background="{DynamicResource MaterialDesignCardBackground}"
+                  Padding="16"
+                 materialDesign:ElevationAssist.Elevation="Dp0"
+                 DockPanel.Dock="Top"
+                 Mode="Standard">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="81*" />
+                        <ColumnDefinition Width="809*"/>
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Height="37" VerticalAlignment="Bottom">
+                        <ToggleButton x:Name="MenuToggleButton"
+                            Margin="5,0,24,0"
+                            AutomationProperties.Name="HamburgerToggleButton"
+                            Click="MenuToggleButton_OnClick"
+                            IsChecked="False"
+                            Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+                        <Button Margin="0,0,0,0"
+                              materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                              Command="{Binding MovePrevCommand}"
+                              Content="{materialDesign:PackIcon Kind=ArrowLeft,
+                                                                Size=24}"
+                              Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                              Style="{StaticResource MaterialDesignToolButton}"
+                              ToolTip="Previous Item" Click="Button_Click" />
+                        <Button Margin="16,0,0,0"
+                              materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                              Command="{Binding MoveNextCommand}"
+                              Content="{materialDesign:PackIcon Kind=ArrowRight,
+                                                                Size=24}"
+                              Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                              Style="{StaticResource MaterialDesignToolButton}"
+                              ToolTip="Next Item" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="Home Budget"
+                        FontSize="22"
+                        Text="Home Budget" Margin="0,0,100,0" />
+                    <materialDesign:PopupBox Grid.Column="3"
+                        PlacementMode="BottomAndAlignRightEdges"
+                        StaysOpen="False" HorizontalAlignment="Center">
+                        <StackPanel>
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <TextBlock Margin="0,0,10,0"
+                                     Text="Light"
+                                     VerticalAlignment="Center" />
+                                <ToggleButton x:Name="DarkModeToggleButton"
+                                    Grid.Column="1"
+                                    Click="MenuDarkModeButton_Click" />
+                                <TextBlock Grid.Column="2"
+                                     Margin="10,0,0,0"
+                                     Text="Dark"
+                                     VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+                </Grid>
+            </materialDesign:ColorZone>
+
+            <Grid Width="80" Background="{DynamicResource MaterialDesignCardBackground}" HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="33*"/>
+                </Grid.ColumnDefinitions>
                 <ListBox
-                    Grid.Row="2"
+                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                    Margin="0,20,0,0"
                     VerticalAlignment="Top"
                     ItemsSource="{Binding SampleList}"
-                    SelectedIndex="0">
+                    SelectedIndex="0" Grid.ColumnSpan="2">
                     <ListBox.ItemContainerStyle>
                         <Style
-                            TargetType="ListBoxItem"
-                            BasedOn="{StaticResource MaterialDesign3.NavigationRailListBoxItem}">
+                            TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesign3.NavigationRailPrimaryListBoxItem}">
+
                             <Setter
                                 Property="materialDesign:NavigationRailAssist.IsTextVisible"
                                 Value="True" />

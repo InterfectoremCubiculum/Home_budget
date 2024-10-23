@@ -1,6 +1,12 @@
 ﻿using Home_budget_graphic.Domain;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
+using System.Configuration;
+using System.Diagnostics;
+using System.Threading;
+using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
+
 
 namespace Home_budget_graphic
 {
@@ -12,7 +18,32 @@ namespace Home_budget_graphic
         public List<SampleItem> SampleList { get; set; }
         public MainWindow()
         {
+
             InitializeComponent();
+
+            var paletteHelper = new PaletteHelper();
+            var theme = paletteHelper.GetTheme();
+            App app = (App)Application.Current;
+
+            switch (app.InitialTheme)
+            {
+                case BaseTheme.Dark:
+                    ModifyTheme(true);
+                    break;
+                case BaseTheme.Light:
+                    ModifyTheme(false);
+                    break;
+            }
+
+
+
+            DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
+
+            if (paletteHelper.GetThemeManager() is { } themeManager)
+            {
+                themeManager.ThemeChanged += (_, e)
+                    => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
+            }
             DataContext = this;
             SampleList = new()
             {
@@ -55,5 +86,22 @@ namespace Home_budget_graphic
             };
         }
 
+
+        private async void MenuPopupButton_OnClick(object sender, RoutedEventArgs e) { }
+        private async void MenuToggleButton_OnClick(object sender, RoutedEventArgs e) { }
+        private async void Button_Click(object sender, RoutedEventArgs e) { }
+        private async void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
+            => ModifyTheme(DarkModeToggleButton.IsChecked == true);
+        private async void FlowDirectionButton_Click(object sender, RoutedEventArgs e) { }
+
+
+        private static void ModifyTheme(bool isDarkTheme)
+        {
+            var paletteHelper = new PaletteHelper();
+            var theme = paletteHelper.GetTheme();
+
+            theme.SetBaseTheme(isDarkTheme ? BaseTheme.Dark : BaseTheme.Light);
+            paletteHelper.SetTheme(theme);
+        }
     }
 }

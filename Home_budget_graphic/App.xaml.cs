@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using MaterialDesignThemes.Wpf;
+using System.Windows;
 
 namespace Home_budget_graphic
 {
@@ -7,6 +8,9 @@ namespace Home_budget_graphic
     /// </summary>
     public partial class App : Application
     {
+
+        internal BaseTheme InitialTheme { get; set; }
+      
     }
 
 }
