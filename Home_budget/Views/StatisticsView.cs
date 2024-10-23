@@ -111,7 +111,11 @@ namespace Home_budget.Views
                     .Validate(y => y.ToString().Length == 4));
 
             var transactionEachMonth = _controller.GetTransactionValueEachMonth(Program.loggedUserID, year);
-
+            if (transactionEachMonth == null) 
+            {
+                StyleClass.ClearWrite([navPanel]);
+                return;
+            }
             StyleClass.ClearWrite([navPanel]);
             Panel barPanel = new Panel(
                 Align.Center(

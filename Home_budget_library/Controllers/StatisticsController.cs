@@ -31,7 +31,7 @@ namespace Home_budget_library.Controllers
             }
             return transactionValues;
         }
-        public Dictionary<int, (decimal positiveSum, decimal negativeSum)> GetTransactionValueEachMonth(int userID, int year)
+        public Dictionary<int, (decimal positiveSum, decimal negativeSum)>? GetTransactionValueEachMonth(int userID, int year)
         {
             var transactions = _context.Transactions
                 .Where(t => t.UserID == userID && t.date.Year == year).OrderBy(t => t.date.Month)
@@ -49,7 +49,7 @@ namespace Home_budget_library.Controllers
                 else
                     transactionValues[month] = (transactionValues[month].positiveSum, transactionValues[month].negativeSum + transaction.Value);
             }
-            return transactionValues;
+            return transactionValues.Count == 0 ? null : transactionValues;
         }
     }
 }

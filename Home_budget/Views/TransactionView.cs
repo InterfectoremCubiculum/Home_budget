@@ -1,6 +1,7 @@
 ﻿using Home_budget_library.Controllers;
 using Home_budget_library.Models;
 using Spectre.Console;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Home_budget.Views
 {
@@ -96,6 +97,8 @@ namespace Home_budget.Views
         {
             var transactionId = StyleClass.AskForInput<int>("Id", "Enter the ID of the transaction you want to copy", "");
             var copiedTransaction = _controller.Copy(Program.loggedUserID, transactionId);
+            if (copiedTransaction == null)
+                return;
             StyleClass.ClearWrite([navPanel]);
             AnsiConsole.Write(StyleClass.AddMenuPanel("Insert new data or click <ENTER> to leave it unchanged"));
             Edit(copiedTransaction);
@@ -106,7 +109,8 @@ namespace Home_budget.Views
             AnsiConsole.Clear();
 
             var transaction = _controller.Get(Program.loggedUserID, transactionId);
-
+            if (transaction == null)
+                return;
             AnsiConsole.Write(navPanel);
             AnsiConsole.Write(StyleClass.AddMenuPanel("Insert new data or click <ENTER> to leave it unchanged"));
             Edit(transaction);

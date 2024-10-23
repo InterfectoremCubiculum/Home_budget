@@ -103,21 +103,25 @@ namespace Home_budget_library.Controllers
         }
 
 
-        public Transaction Copy(int userID, int transactionId)
+        public Transaction? Copy(int userID, int transactionId)
         {
             var transaction = Get(userID, transactionId);
-            var newtransaction = new Transaction()
+            if (transaction == null) return null;
+
+            var newTransaction = new Transaction
             {
                 Title = transaction.Title,
                 UserID = userID,
                 Value = transaction.Value,
-                date = transaction.date,
-                Description = transaction.Description,
+                date = transaction.date, 
+                Description = transaction.Description
             };
-            _context.Transactions.Add(newtransaction);
+
+            _context.Transactions.Add(newTransaction);
             Save();
 
-            return newtransaction;
+            return newTransaction;
+
         }
     }
 }
