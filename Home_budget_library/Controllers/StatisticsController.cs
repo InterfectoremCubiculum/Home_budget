@@ -5,11 +5,9 @@ namespace Home_budget_library.Controllers
     public class StatisticsController
     {
         protected readonly HomeBudgetDbContext _context;
-        public readonly CategoryController _categoryRepo;
         public StatisticsController()
         {
             _context = new HomeBudgetDbContext();
-            _categoryRepo = new CategoryController(_context);
         }
         public Dictionary<int, (decimal positiveSum, decimal negativeSum)> GetTransactionValueEachDay(int userID, int month, int year)
         {

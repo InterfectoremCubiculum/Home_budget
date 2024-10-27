@@ -76,7 +76,7 @@ namespace Home_budget.Views
                     .DefaultValue(DateOnly.FromDateTime(DateTime.Today)));
             var description = StyleClass.AskForInput<string>("Description", "Tell more", "Description");
 
-            _controller.Add(Program.loggedUserID, title, value, date, description, SelectedCategories(_controller._categoryRepo.GetAll()));
+            _controller.Add(Program.loggedUserID, title, value, date, description, SelectedCategories(_controller.GetAllCategories()));
         }
 
         protected void Delete()
@@ -125,7 +125,7 @@ namespace Home_budget.Views
             var newDate = AnsiConsole.Prompt(new TextPrompt<DateOnly>($"[{StyleClass.T_COL_STR}]Enter the new [{StyleClass.T_HL_STR}]Date[/] [grey]yyyy.MM.dd[/][/] ->")
                                             .ValidationErrorMessage($"[{StyleClass.T_HL_ERR_STR}]Please use this format yyyy.MM.dd[/]")
                                             .DefaultValue(transaction.date));
-            var newCategories = SelectedCategories(_controller._categoryRepo.GetAll());
+            var newCategories = SelectedCategories(_controller.GetAllCategories());
             var newDescription = AnsiConsole.Prompt(new TextPrompt<string>($"[{StyleClass.T_COL_STR}]Enter the new [{StyleClass.T_HL_STR}]Description[/][/] ->")
                                             .DefaultValue(transaction.Description));
             _controller.Edit(transaction, newTitle, newValue, newDate, newDescription, newCategories);
@@ -156,35 +156,27 @@ namespace Home_budget.Views
 
                     foreach (var item in listOfTransaction)
                     {
-                        var categories = _controller._categoryRepo.GetByTransactionID(item.Value.Id);
-                        var categoriesString = String.Join(", ", categories);
                         table.AddRow(
                             $"[{Color.Purple}]{item.Key}[/]",
                             $"[{Color.Yellow}]{SafeSubstring(item.Value.Title, 0, maxLength)}[/]",
                             $"[{Color.Lime}]{item.Value.Value}[/]",
                             $"[{Color.DarkMagenta}]{item.Value.date}[/]",
-                            $"[{Color.Aqua}]{SafeSubstring(categoriesString, 0, maxLength)}[/]",
+                            $"[{Color.Aqua}]{_controller.GetCategoryName(item.Value.CategoryID)}[/]",
                             $"[{Color.Silver}]{SafeSubstring(item.Value.Description, 0, maxLength)}[/]");
                         context.Refresh();
                     }
                 });
         }
-        protected Dictionary<int, string> SelectedCategories(Dictionary<int, string> categoriesDictionary)
+        protected int SelectedCategories( List<Category> categoriesList)
         {
-            var selectedNames = AnsiConsole.Prompt(
-            new MultiSelectionPrompt<string>()
+            var selectedName = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
                 .Title("Choice categories")
-                .NotRequired()
                 .PageSize(10)
                 .MoreChoicesText("[grey](Move up and down to reveal more categories)[/]")
-                .InstructionsText(
-                    $"[{StyleClass.T_HL_STR}](Press [blue]<space>[/] to toggle a category, [green]<enter>[/] to accept)[/]")
-                .AddChoices(categoriesDictionary.Values)
+                .AddChoices(categoriesList.Select(cat => cat.Name).ToList())
                 );
-            var selectedCategories = categoriesDictionary
-                .Where(pair => selectedNames.Contains(pair.Value))
-                .ToDictionary(pair => pair.Key, pair => pair.Value);
-            return selectedCategories;
+            return _controller.GetCategoryId(selectedName);
         }
 
         private string SafeSubstring(string str, int startIndex, int length)

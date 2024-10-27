@@ -15,6 +15,27 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="DynamicButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignToolButton}">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Background" Value="#FFDDDDDD"/>
+
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="TextBlock" x:Key="DataGridTextColumnTextBlockStyle">
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+
+            <Style TargetType="TextBox" x:Key="DataGridTextColumnTextBoxStyle"  BasedOn="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="AcceptsReturn" Value="True" />
+            </Style>
         </ResourceDictionary>
+
     </Application.Resources>
+    
 </Application>

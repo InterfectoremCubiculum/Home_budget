@@ -5,13 +5,11 @@ namespace Home_budget_library.Controllers
     public class TransactionController
     {
         protected readonly HomeBudgetDbContext _context;
-        public readonly CategoryController _categoryRepo;
         public TransactionController()
         {
             _context = new HomeBudgetDbContext();
-            _categoryRepo = new CategoryController(_context);
         }
-        public void Add(int userID, string title, decimal value, DateOnly date, string description, Dictionary<int, string>? categories)
+        public void Add(int userID, string title, decimal value, DateOnly date, string description, int categoryID)
         {
             Transaction transaction = new Transaction()
             {
@@ -20,25 +18,20 @@ namespace Home_budget_library.Controllers
                 Value = value,
                 date = date,
                 Description = description,
+                CategoryID = categoryID
             };
             _context.Transactions.Add(transaction);
             Save();
-            if (categories is not null)
-                ConnectCategoriesTransaction(transaction.Id, categories);
         }
-        public void ConnectCategoriesTransaction(int transactionID, Dictionary<int, string> categories)
+        public int GetCategoryId(string categoryName) 
         {
-            foreach (var category in categories)
-            {
-                var transactionCategory = new TransactionCategory
-                {
-                    TransactionId = transactionID,
-                    CategoryId = category.Key
-                };
-                _context.TransactionCategories.Add(transactionCategory);
-            }
-            _context.SaveChanges();
+            return _context.Categories.First(cat => cat.Name == categoryName).Id;
         }
+        public string GetCategoryName(int categoryID)
+        {
+            return _context.Categories.First(cat => cat.Id == categoryID).Name;
+        }
+
         public void DeleteMany(List<int> indexes, int userId, bool isThisTransactionId = false)
         {
             if (isThisTransactionId)
@@ -63,17 +56,13 @@ namespace Home_budget_library.Controllers
             }
         }
 
-        public void Edit(Transaction transaction, string newTitle, decimal newValue, DateOnly newDate, string newDescription, Dictionary<int, string>? categories)
+        public void Edit(Transaction transaction, string newTitle, decimal newValue, DateOnly newDate, string newDescription, int categoryID)
         {
             transaction.Title = newTitle;
             transaction.Description = newDescription;
             transaction.date = newDate;
             transaction.Value = newValue;
-            if (categories is not null)
-            {
-                _categoryRepo.DeleteByTransactionID(transaction.Id);
-                ConnectCategoriesTransaction(transaction.Id, categories);
-            }
+            transaction.CategoryID = categoryID;
             Save();
         }
         public bool Save()
@@ -113,8 +102,9 @@ namespace Home_budget_library.Controllers
                 Title = transaction.Title,
                 UserID = userID,
                 Value = transaction.Value,
-                date = transaction.date, 
-                Description = transaction.Description
+                date = transaction.date,
+                Description = transaction.Description,
+                CategoryID = transaction.CategoryID,
             };
 
             _context.Transactions.Add(newTransaction);
@@ -122,6 +112,10 @@ namespace Home_budget_library.Controllers
 
             return newTransaction;
 
+        }
+        public List<Category> GetAllCategories() 
+        {
+            return _context.Categories.ToList();
         }
     }
 }

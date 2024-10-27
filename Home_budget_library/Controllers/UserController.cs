@@ -85,7 +85,6 @@ namespace Home_budget_library.Controllers
         {
             var user = _context.Users.FirstOrDefault(u => u.Name.ToLower() == username.ToLower());
             return user?.Id ?? 0; // return 0 if user not found
-
         }
     }
 }

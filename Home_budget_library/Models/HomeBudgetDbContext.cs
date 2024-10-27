@@ -13,25 +13,15 @@ namespace Home_budget_library.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<TransactionCategory> TransactionCategories {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //Transaction-Category Many To Many
-            modelBuilder.Entity<TransactionCategory>()
-                .HasKey(ic => new { ic.TransactionId, ic.CategoryId });
 
-            modelBuilder.Entity<TransactionCategory>()
-                .HasOne<Transaction>()
-                .WithMany()
-                .HasForeignKey(ic => ic.TransactionId);
-
-            modelBuilder.Entity<TransactionCategory>()
+            //Category-Transaction One To Many
+            modelBuilder.Entity<Transaction>()
                 .HasOne<Category>()
                 .WithMany()
-                .HasForeignKey(ic => ic.CategoryId);
-
-
+                .HasForeignKey(i => i.CategoryID);
 
             //User-Transaction One To Many
             modelBuilder.Entity<Transaction>()
@@ -46,7 +36,7 @@ namespace Home_budget_library.Models
 
             base.OnModelCreating(modelBuilder);
         }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=HomeBudgetDB;Trusted_Connection=True;MultipleActiveResultSets=true");

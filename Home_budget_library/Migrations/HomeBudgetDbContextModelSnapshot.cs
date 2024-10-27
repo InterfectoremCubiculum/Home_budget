@@ -47,6 +47,9 @@ namespace Home_budget_library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -66,24 +69,11 @@ namespace Home_budget_library.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryID");
+
                     b.HasIndex("UserID");
 
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("Home_budget_library.Models.TransactionCategory", b =>
-                {
-                    b.Property<int>("TransactionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TransactionId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("TransactionCategories");
                 });
 
             modelBuilder.Entity("Home_budget_library.Models.User", b =>
@@ -109,24 +99,15 @@ namespace Home_budget_library.Migrations
 
             modelBuilder.Entity("Home_budget_library.Models.Transaction", b =>
                 {
+                    b.HasOne("Home_budget_library.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Home_budget_library.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Home_budget_library.Models.TransactionCategory", b =>
-                {
-                    b.HasOne("Home_budget_library.Models.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Home_budget_library.Models.Transaction", null)
-                        .WithMany()
-                        .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
