@@ -4,25 +4,11 @@ namespace Home_budget.Views
 {
     public static class StyleClass
     {
-       
         public static readonly Style TEXT_COLOR = new Style(new Color(242, 214, 162));
         public static readonly Color BORDER_COLOR = new Color(242, 170, 107);
         public static readonly Color FIGLETTEXT_COLOR = new Color(242, 198, 153);
         public static readonly Color DIVIDER_COLOR = new Color(242, 170, 107);
 
-        public static readonly List<Color> Colors = new List<Color> {
-            Color.DarkCyan,
-            Color.DeepPink4 ,
-            Color.RoyalBlue1, 
-            Color.PaleGreen3,
-            Color.Orange4_1, 
-            Color.LightSlateBlue,
-            Color.IndianRed, 
-            Color.MediumPurple2, 
-            Color.GreenYellow, 
-            Color.LightPink3, 
-            Color.MistyRose1 , 
-            Color.Plum4 };
         public static readonly string T_HL_ERR_STR = "rgb(242,85,91)";
         public static readonly string T_COL_STR = "rgb(242,214,162)";
         public static readonly string FIGL_COL_STR = "rgb(242,198,153)";
@@ -69,10 +55,6 @@ namespace Home_budget.Views
             AnsiConsole.WriteLine();
             AnsiConsole.Write(new Rule($"[{FIGL_COL_STR}]{text}[/]").RuleStyle(DIVIDER_COLOR).LeftJustified());
         }
-        public static Rule Divider(string text)
-        {
-            return new Rule($"[{FIGL_COL_STR}]{text}[/]").RuleStyle(DIVIDER_COLOR).LeftJustified();
-        }
 
         public static Panel AddMenuPanel(string text) 
         {
@@ -81,6 +63,15 @@ namespace Home_budget.Views
                         .RoundedBorder()
                         .Padding(1,0,1,0);
             return menuPanel;
+        }
+
+        public static T AskForInput<T>(string dividerText, string promptText, string highLightedText, T defaultValue = default)
+        {
+            WriteDivider(dividerText);
+            return AnsiConsole.Prompt(
+                new TextPrompt<T>($"[{T_COL_STR}]{promptText}[/] [{T_HL_STR}]{highLightedText}[/]:")
+                    .DefaultValue(defaultValue)
+            );
         }
         public static T AskForInput<T>(string dividerText, string promptText, string highLightedText)
         {

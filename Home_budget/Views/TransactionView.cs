@@ -7,8 +7,8 @@ namespace Home_budget.Views
 {
     public class TransactionView
     {
-        private readonly TransactionController _controller;
-        private readonly Panel navPanel;
+        private TransactionController _controller;
+        private Panel navPanel;
         public TransactionView(TransactionController controller)
         {
             _controller = controller;
@@ -89,7 +89,8 @@ namespace Home_budget.Views
         {
             var title = StyleClass.AskForInput<string>("Search by Title", "Write", "Title");
             var result = _controller.Search(title, Program.loggedUserID);
-            StyleClass.ClearWrite([navPanel]);
+            AnsiConsole.Clear();
+            AnsiConsole.Write(navPanel);
             WriteToTable(result, int.MaxValue);
             AnsiConsole.Write(navPanel);
         }
@@ -97,10 +98,13 @@ namespace Home_budget.Views
         {
             var transactionId = StyleClass.AskForInput<int>("Id", "Enter the ID of the transaction you want to copy", "");
             var copiedTransaction = _controller.Copy(Program.loggedUserID, transactionId);
+<<<<<<< HEAD
             if (copiedTransaction == null)
                 return;
             StyleClass.ClearWrite([navPanel]);
             AnsiConsole.Write(StyleClass.AddMenuPanel("Insert new data or click <ENTER> to leave it unchanged"));
+=======
+>>>>>>> parent of 3fdc336 (Update view (StatisticController, statisticsView))
             Edit(copiedTransaction);
         }
         protected void EditView()
