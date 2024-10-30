@@ -11,6 +11,7 @@ using Home_budget_library.Controllers;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using ControlzEx.Theming;
 
 
 namespace Home_budget_graphic
@@ -47,8 +48,6 @@ namespace Home_budget_graphic
                     ModifyTheme(false);
                     break;
             }
-
-
 
             DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
 
@@ -162,7 +161,7 @@ namespace Home_budget_graphic
                 MainFrame.Navigate(new HomePage());
             }
             else
-                await SnackbarAtive("Nie ma takiego użytkownika lub hasło jest nieprawidłowe");
+                await SnackbarAtive("There is no such user or the password is incorrect");
         }
         private async void CreateAccount_Click(object sender, RoutedEventArgs e)
         {

@@ -1,4 +1,5 @@
 ﻿using Home_budget_library.Models;
+using System.Net.Http.Headers;
 
 namespace Home_budget_library.Controllers
 {
@@ -116,6 +117,11 @@ namespace Home_budget_library.Controllers
         public List<Category> GetAllCategories() 
         {
             return _context.Categories.ToList();
+        }
+        public bool ValidateValue(decimal value) 
+        {
+
+            return value == Math.Round(value, 2);
         }
     }
 }

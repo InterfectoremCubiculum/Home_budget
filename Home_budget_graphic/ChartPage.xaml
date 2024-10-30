@@ -6,9 +6,82 @@
       xmlns:local="clr-namespace:Home_budget_graphic"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ChartPage">
+      Title="ChartPage"
+      xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf">
 
     <Grid Margin="87 0 0 0">
         <TextBlock Text="Welcome to the Chart Page" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+        <materialDesign:Card 
+            Grid.Row="1"             
+            Width="400">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="360"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <TextBox   
+                    Grid.Row="0"
+                    materialDesign:HintAssist.Hint="Title" 
+                    Margin="12,5,12,5"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    materialDesign:HintAssist.FloatingScale="0.5"
+                    FontSize="20"
+                    />
+                <TextBox   
+                    Grid.Row="1"
+                    materialDesign:HintAssist.Hint="Value" 
+                    Margin="12,5,12,5"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    materialDesign:HintAssist.FloatingScale="0.5"
+                    FontSize="20"
+                    />
+                <TextBox   
+                    Grid.Row="2"
+                    materialDesign:HintAssist.Hint="Date" 
+                    Margin="12,5,12,5"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    materialDesign:HintAssist.FloatingScale="0.5"
+                    FontSize="20"
+                    />
+                <ComboBox
+                    Grid.Row="3"
+                    Margin="12,5,12,5"
+                    ItemsSource="{Binding DataContext.CategoryItemList, RelativeSource={RelativeSource AncestorType=Page}}"
+                    SelectedValue="{Binding Category, Mode=TwoWay}"
+                    Style="{StaticResource MaterialDesignDataGridComboBox}"
+                    />
+
+                <TextBox   
+                    Height="340"
+                    Grid.Row="4"
+                    VerticalAlignment="Stretch"
+                    materialDesign:HintAssist.Hint="Description" 
+                    Margin="12,15,12,5"
+                    TextWrapping="Wrap"
+                    FontSize="20"
+                    VerticalScrollBarVisibility="Auto"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    />
+                <StackPanel
+                    Grid.Row="5" VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,10">
+                    <Button
+                        Content="{materialDesign:PackIcon Kind=ContentSave,Size=24}" VerticalAlignment="Top" Margin="10,0,10,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        />
+                    <Button
+                        Content="{materialDesign:PackIcon Kind=ContentCopy,Size=24}" VerticalAlignment="Top" Margin="10,0,10,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        />
+                    <Button
+                        Content="{materialDesign:PackIcon Kind=Delete,Size=24}" VerticalAlignment="Top" Margin="10,0,10,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        />
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </Page>

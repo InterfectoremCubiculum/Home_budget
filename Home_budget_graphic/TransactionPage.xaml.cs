@@ -48,25 +48,12 @@ namespace Home_budget_graphic
         }
         private void Transaction_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
-            if (e.EditAction == DataGridEditAction.Commit)
-            {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    var updatedTransaction = e.Row.Item as TransactionItem;
-                    if (updatedTransaction != null)
-                    {
-                        var transactionFromModel = _controller.Get(MainWindow.loggedInUser, updatedTransaction.Id);
-                        _controller.Edit(
-                            transactionFromModel,
-                            updatedTransaction.Title,
-                            updatedTransaction.Value,
-                            DateOnly.Parse(updatedTransaction.Date),
-                            updatedTransaction.Description,
-                            _controller.GetCategoryId(updatedTransaction.Category)
-                        );
-                    }
-                }), System.Windows.Threading.DispatcherPriority.Background);
-            }
+            TransactionEdit.Transaction_RowEditEnding(sender, e, _controller);
+        }
+
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            MouseWheelHandler.HandlePreviewMouseWheel(sender, e); // Wywołaj metodę pomocniczą
         }
     }
 }
