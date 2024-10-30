@@ -20,7 +20,7 @@ namespace Home_budget_graphic.Domain
                     var updatedTransaction = e.Row.Item as TransactionItem;
                     if (updatedTransaction != null)
                     {
-                        var transactionFromModel = controller.Get(MainWindow.loggedInUser, updatedTransaction.Id);
+                        var transactionFromModel = controller.Get(MainWindow.LoggedInUser, updatedTransaction.Id);
                         controller.Edit(
                             transactionFromModel,
                             updatedTransaction.Title,

@@ -8,13 +8,16 @@
     {
 
         public static readonly Panel header = StyleClass.HEADER_1;
-        public static int loggedUserID = 0;
-        static void Main(string[] args)
+        private static int loggedUserID = 0;
+
+        public static int LoggedUserID { get => loggedUserID; set => loggedUserID =value; }
+
+        static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.UTF8;
 
-            Layout layout = new Layout();
+            Layout layout = new();
 
             layout.SplitRows(
                     new Layout("Header").Ratio(2),

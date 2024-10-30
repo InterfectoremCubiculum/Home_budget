@@ -1,5 +1,4 @@
 ﻿using Home_budget_library.Models;
-using System.Net.Http.Headers;
 
 namespace Home_budget_library.Controllers
 {
@@ -12,7 +11,7 @@ namespace Home_budget_library.Controllers
         }
         public void Add(int userID, string title, decimal value, DateOnly date, string description, int categoryID)
         {
-            Transaction transaction = new Transaction()
+            Transaction transaction = new()
             {
                 Title = title,
                 UserID = userID,
@@ -24,7 +23,7 @@ namespace Home_budget_library.Controllers
             _context.Transactions.Add(transaction);
             Save();
         }
-        public int GetCategoryId(string categoryName) 
+        public int GetCategoryId(string categoryName)
         {
             return _context.Categories.First(cat => cat.Name == categoryName).Id;
         }
@@ -38,7 +37,7 @@ namespace Home_budget_library.Controllers
             if (isThisTransactionId)
             {
                 var transactionsToRemove = _context.Transactions.Where(t => indexes.Contains(t.Id)).ToList();
-                if (transactionsToRemove.Any())
+                if (transactionsToRemove.Count != 0)
                 {
                     _context.Transactions.RemoveRange(transactionsToRemove);
                     _context.SaveChanges();
@@ -57,18 +56,19 @@ namespace Home_budget_library.Controllers
             }
         }
 
-        public void Edit(Transaction transaction, string newTitle, decimal newValue, DateOnly newDate, string newDescription, int categoryID)
+        public async Task Edit(Transaction transaction, string newTitle, decimal newValue, DateOnly newDate, string newDescription, int categoryID)
         {
             transaction.Title = newTitle;
             transaction.Description = newDescription;
             transaction.date = newDate;
             transaction.Value = newValue;
             transaction.CategoryID = categoryID;
-            Save();
+            _context.Update(transaction);
+            await _context.SaveChangesAsync();
         }
         public bool Save()
         {
-            return _context.SaveChanges() > 0 ? true : false;
+            return _context.SaveChanges() > 0;
         }
         public Transaction Get(int userID, int transactionID)
         {
@@ -88,7 +88,7 @@ namespace Home_budget_library.Controllers
         public Dictionary<int, Transaction> Search(string title, int userID)
         {
             return GetAll(userID)
-                .Where(kvp => kvp.Value.Title.ToLower().Contains(title.ToLower()))
+                .Where(kvp => kvp.Value.Title.Contains(title, StringComparison.CurrentCultureIgnoreCase))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
@@ -114,11 +114,11 @@ namespace Home_budget_library.Controllers
             return newTransaction;
 
         }
-        public List<Category> GetAllCategories() 
+        public List<Category> GetAllCategories()
         {
             return _context.Categories.ToList();
         }
-        public bool ValidateValue(decimal value) 
+        public static bool ValidateValue(decimal value)
         {
 
             return value == Math.Round(value, 2);

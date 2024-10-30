@@ -31,7 +31,7 @@ namespace Home_budget_graphic
         {
             InitializeComponent();
             TransactionItemList = new List<TransactionItem>();
-            foreach (var tran in _controller.GetAll(MainWindow.loggedInUser))
+            foreach (var tran in _controller.GetAll(MainWindow.LoggedInUser))
             {
                 TransactionItemList.Add(new TransactionItem
                 {

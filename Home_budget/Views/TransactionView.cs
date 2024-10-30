@@ -76,19 +76,19 @@ namespace Home_budget.Views
                     .DefaultValue(DateOnly.FromDateTime(DateTime.Today)));
             var description = StyleClass.AskForInput<string>("Description", "Tell more", "Description");
 
-            _controller.Add(Program.loggedUserID, title, value, date, description, SelectedCategories(_controller.GetAllCategories()));
+            _controller.Add(Program.LoggedUserID, title, value, date, description, SelectedCategories(_controller.GetAllCategories()));
         }
 
         protected void Delete()
         {
             var idToDelete = AnsiConsole.Ask<string>($"[{StyleClass.T_COL_STR}]Write the ID of the items you want to remove. e.g. 1-5, 8, 11-13[/]:");
             var ids = ParseIdRanges(idToDelete);
-            _controller.DeleteMany(ids, Program.loggedUserID);
+            _controller.DeleteMany(ids, Program.LoggedUserID);
         }
         protected void Search()
         {
             var title = StyleClass.AskForInput<string>("Search by Title", "Write", "Title");
-            var result = _controller.Search(title, Program.loggedUserID);
+            var result = _controller.Search(title, Program.LoggedUserID);
             StyleClass.ClearWrite([navPanel]);
             WriteToTable(result, int.MaxValue);
             AnsiConsole.Write(navPanel);
@@ -96,7 +96,7 @@ namespace Home_budget.Views
         protected void Copy()
         {
             var transactionId = StyleClass.AskForInput<int>("Id", "Enter the ID of the transaction you want to copy", "");
-            var copiedTransaction = _controller.Copy(Program.loggedUserID, transactionId);
+            var copiedTransaction = _controller.Copy(Program.LoggedUserID, transactionId);
             if (copiedTransaction == null)
                 return;
             StyleClass.ClearWrite([navPanel]);
@@ -108,7 +108,7 @@ namespace Home_budget.Views
             var transactionId = StyleClass.AskForInput<int>("Id", "Enter the ID of the transaction you want to edit", "");
             AnsiConsole.Clear();
 
-            var transaction = _controller.Get(Program.loggedUserID, transactionId);
+            var transaction = _controller.Get(Program.LoggedUserID, transactionId);
             if (transaction == null)
                 return;
             AnsiConsole.Write(navPanel);
@@ -133,7 +133,7 @@ namespace Home_budget.Views
 
         protected void ViewAll(int? maxLength)
         {
-            var listOfTransaction = _controller.GetAll(Program.loggedUserID);
+            var listOfTransaction = _controller.GetAll(Program.LoggedUserID);
             maxLength ??= int.MaxValue;
 
             WriteToTable(listOfTransaction, (int)maxLength);
@@ -179,7 +179,7 @@ namespace Home_budget.Views
             return _controller.GetCategoryId(selectedName);
         }
 
-        private string SafeSubstring(string str, int startIndex, int length)
+        private static string SafeSubstring(string str, int startIndex, int length)
         {
             if (startIndex < 0 || startIndex >= str.Length)
                 return string.Empty;
@@ -225,7 +225,7 @@ namespace Home_budget.Views
             ViewAll(35);
             AnsiConsole.Write(navPanel);
         }
-        private Panel CreateNavPanel()
+        private static Panel CreateNavPanel()
         {
             return new Panel(
                 Align.Center(

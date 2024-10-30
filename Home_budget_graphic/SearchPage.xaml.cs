@@ -56,7 +56,7 @@ namespace Home_budget_graphic
         private void HandleSearch(string searchText)
         {
             TransactionItemList = new List<TransactionItem>();
-            foreach (var tran in _controller.Search(searchText, MainWindow.loggedInUser))
+            foreach (var tran in _controller.Search(searchText, MainWindow.LoggedInUser))
             {
                 TransactionItemList.Add(new TransactionItem
                 {

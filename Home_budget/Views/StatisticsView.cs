@@ -60,7 +60,7 @@ namespace Home_budget.Views
 
 
 
-            var dicTransactions = _controller.GetTransactionValueEachDay(Program.loggedUserID, month, year);
+            var dicTransactions = _controller.GetTransactionValueEachDay(Program.LoggedUserID, month, year);
             var calendarIncome = CreateCalendar(month, year, dicTransactions.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.positiveSum), Color.Green);
             var calendarExspense = CreateCalendar(month, year, dicTransactions.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.negativeSum), Color.Red);
 
@@ -110,7 +110,7 @@ namespace Home_budget.Views
                     .DefaultValue(DateTime.Today.Year)
                     .Validate(y => y.ToString().Length == 4));
 
-            var transactionEachMonth = _controller.GetTransactionValueEachMonth(Program.loggedUserID, year);
+            var transactionEachMonth = _controller.GetTransactionValueEachMonth(Program.LoggedUserID, year);
             if (transactionEachMonth == null) 
             {
                 StyleClass.ClearWrite([navPanel]);

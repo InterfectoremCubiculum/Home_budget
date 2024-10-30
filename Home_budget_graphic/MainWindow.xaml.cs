@@ -23,7 +23,7 @@ namespace Home_budget_graphic
     {
 
         public List<NavItem> NavList { get; set; }
-        public static int loggedInUser { get; private set; }
+        public static int LoggedInUser { get; private set; }
         private static UserController _userController;
 
         public MainWindow()
@@ -31,7 +31,7 @@ namespace Home_budget_graphic
 
             InitializeComponent();
             _userController = new UserController();
-            loggedInUser = -1;
+            LoggedInUser = -1;
             UpdateNavigationButtons();
             MainFrame.Navigated += MainFrame_Navigated;
 
@@ -57,8 +57,8 @@ namespace Home_budget_graphic
                     => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
             }
             DataContext = this;
-            NavList = new()
-            {
+            NavList =
+            [
                 new NavItem
                 {
                     Title = "Home",
@@ -89,7 +89,7 @@ namespace Home_budget_graphic
                     SelectedIcon = PackIconKind.ChartBar,
                     UnselectedIcon = PackIconKind.ChartBar,
                 },
-            };
+            ];
         }
         private void NavList_SelectionChanged(object sender, SelectionChangedEventArgs e) 
         {
@@ -143,7 +143,7 @@ namespace Home_budget_graphic
         }
         private void LogOut_Click(object sender, RoutedEventArgs e) 
         {
-            loggedInUser = -1;
+            LoggedInUser = -1;
             LoginGrid.Visibility = Visibility.Visible;
             AppGrid.Visibility = Visibility.Hidden;
 
@@ -154,7 +154,7 @@ namespace Home_budget_graphic
             string password = LoginPasswordBox.Password;
             if (_userController.ValidateLogin(username, password)) 
             {
-                loggedInUser =  _userController.GetUserID(username);
+                LoggedInUser =  _userController.GetUserID(username);
                 LoginGrid.Visibility = Visibility.Hidden;
                 AppGrid.Visibility = Visibility.Visible;
                 await ClearAllTextBoxes(LoginGrid);
@@ -192,7 +192,7 @@ namespace Home_budget_graphic
             else 
             {
                 _userController.AddUser(username, password);
-                loggedInUser = _userController.GetUserID(username);
+                LoggedInUser = _userController.GetUserID(username);
                 LoginGrid.Visibility = Visibility.Hidden;
                 AppGrid.Visibility = Visibility.Visible;
                 await ClearAllTextBoxes(LoginGrid);
@@ -219,7 +219,7 @@ namespace Home_budget_graphic
             theme.SetBaseTheme(isDarkTheme ? BaseTheme.Dark : BaseTheme.Light);
             paletteHelper.SetTheme(theme);
         }
-        private async Task ClearAllTextBoxes(DependencyObject parent)
+        private static async Task ClearAllTextBoxes(DependencyObject parent)
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {

@@ -260,7 +260,7 @@ namespace Home_budget.Views
 
         private void GoToMainMenu(string username)
         {
-            Program.loggedUserID = _controller.GetUserID(username);
+            Program.LoggedUserID = _controller.GetUserID(username);
             AnsiConsole.Clear();
         }
 
