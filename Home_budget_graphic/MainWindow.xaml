@@ -239,7 +239,7 @@
                     </ListBox>
                 </Grid>
                 <Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource MaterialDesignScrollViewer}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Style="{StaticResource MaterialDesignScrollViewer}">
                         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
                     </ScrollViewer>
                 </Grid>

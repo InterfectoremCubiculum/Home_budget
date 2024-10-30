@@ -13,6 +13,7 @@
         <DataGrid
 
             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
             ItemsSource="{Binding TransactionItemList}"
@@ -68,7 +69,7 @@
                     EditingElementStyle="{StaticResource DataGridTextColumnTextBoxStyle}"
                     Header="Description" 
                     Binding="{Binding Description}" 
-                    Width="300"  
+                    Width="500"  
                     />
             </DataGrid.Columns>
         </DataGrid>
