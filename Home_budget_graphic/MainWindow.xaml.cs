@@ -111,7 +111,6 @@ namespace Home_budget_graphic
                     case 4:
                         MainFrame.Navigate(new ChartPage());
                         break;
-
                 }
         }
 

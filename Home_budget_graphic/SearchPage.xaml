@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="150"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <materialDesign:ColorZone
             Grid.Row="0"
@@ -36,20 +37,45 @@
                 KeyDown="TextBox_KeyDown"
                 />
         </materialDesign:ColorZone>
-        <DataGrid 
-            Margin="20,20,20,20"
-            Grid.Row="1"
+        <Menu Grid.Row="1" Margin="20,0,20,0">
+            <MenuItem
+             Command="{Binding DeleteCommand}"
+             Header="_Delete"
+             Icon="{materialDesign:PackIcon Kind=Delete}" />
+            <Separator Width="35" RenderTransformOrigin="0.5,0.5">
+                <Separator.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Separator.RenderTransform>
+            </Separator>
+            <MenuItem
+             Command="{Binding CopyCommand}"
+             Header="_Copy"
+             Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
+        </Menu>
+        <DataGrid
+            Margin="20,0,20,0"
             Name="TransationsDataGrid"
+            Grid.Row="2"
             ScrollViewer.VerticalScrollBarVisibility="Disabled"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
-            ItemsSource="{Binding TransactionItemList}"
             SelectionMode="Extended"
             SelectionUnit="Cell"
             RowEditEnding="Transaction_RowEditEnding"
             PreviewMouseWheel="DataGrid_PreviewMouseWheel">
             <DataGrid.Columns>
+                <DataGridCheckBoxColumn
+                    HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                    Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                </DataGridCheckBoxColumn>
                 <DataGridTextColumn 
                     Header="ID" 
                     Binding="{Binding Id}" 
@@ -70,7 +96,7 @@
                     EditingElementStyle="{StaticResource DataGridTextColumnTextBoxStyle}">
                     <DataGridTextColumn.Binding>
                         <Binding
-                        Path="Value">
+                            Path="Value">
                             <Binding.ValidationRules>
                                 <domain:DecimalValidationRule/>
                             </Binding.ValidationRules>
@@ -94,7 +120,6 @@
                     Width="150"
                     Header="Category"
                     IsEditable="True"
-                    ItemsSource="{Binding DataContext.CategoryItemList}"
                     SelectedValueBinding="{Binding Category, Mode=TwoWay}">
                 </materialDesign:DataGridComboBoxColumn>
                 <DataGridTextColumn 

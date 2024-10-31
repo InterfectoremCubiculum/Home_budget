@@ -25,15 +25,19 @@ namespace Home_budget_graphic
     /// </summary>
     public partial class SearchPage : Page
     {
-        public List<TransactionItem> TransactionItemList { get; set; }
-        public List<string> CategoryItemList { get; set; }
-        public static TransactionController _controller = new TransactionController();
+        private List<TransactionItem> TransactionItemList { get; set; }
+        private static TransactionController _controller = new();
+        public ICommand DeleteCommand { get; }
+        public ICommand CopyCommand { get; }
+        private string searchText;
         public SearchPage()
         {
             InitializeComponent();
-            CategoryItemList = _controller.GetAllCategories().Select(c => c.Name).ToList();
-            Categories.ItemsSource = CategoryItemList;
+            DeleteCommand = new RelayCommand(DeleteSelectedItems);
+            CopyCommand = new RelayCommand(CopySelectedItems);
 
+            Categories.ItemsSource = _controller.GetAllCategories().Select(c => c.Name).ToList();
+            DataContext = this;
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -46,16 +50,15 @@ namespace Home_budget_graphic
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     HandleSearch(searchText);
-
+                    this.searchText = searchText;
                     textBox.Clear();
                 }
-
                 e.Handled = true;
             }
         }
-        private void HandleSearch(string searchText)
+        private void HandleSearch(string searchText="")
         {
-            TransactionItemList = new List<TransactionItem>();
+            TransactionItemList = new();
             foreach (var tran in _controller.Search(searchText, MainWindow.LoggedInUser))
             {
                 TransactionItemList.Add(new TransactionItem
@@ -68,7 +71,33 @@ namespace Home_budget_graphic
                     Category = _controller.GetCategoryName(tran.Value.CategoryID)
                 });
             }
+            TransationsDataGrid.ItemsSource = null;
             TransationsDataGrid.ItemsSource = TransactionItemList;
+        }
+        private void DeleteSelectedItems()
+        {
+            if (TransactionItemList?.Any(item => item.IsSelected) != true)
+                return;
+
+            var indexes = TransactionItemList
+                .Where(item => item.IsSelected)
+                .Select(item => item.Id)
+                .ToList();
+
+            _controller.DeleteMany(indexes, MainWindow.LoggedInUser);
+            HandleSearch(searchText);
+        }
+        private void CopySelectedItems()
+        {
+            if (TransactionItemList?.Any(item => item.IsSelected) != true)
+                return;
+
+            TransactionItemList
+                .Where(item => item.IsSelected)
+                .ToList()
+                .ForEach(item => _controller.Copy(MainWindow.LoggedInUser, item.Id));
+
+            HandleSearch(searchText);
         }
         private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e) 
         {

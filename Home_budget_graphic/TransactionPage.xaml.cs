@@ -3,6 +3,7 @@ using Home_budget_library.Controllers;
 using Home_budget_library.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,18 +25,51 @@ namespace Home_budget_graphic
     /// </summary>
     public partial class TransactionPage : Page
     {
-        public List<TransactionItem> TransactionItemList { get; set; }
-        public List<string> CategoryItemList { get; set; }
-        public static TransactionController _controller = new TransactionController();
-        public ICommand DeleteCommand { get; }
-        public ICommand CopyCommand { get; }
+        private readonly static TransactionController _controller = new();
+        private List<TransactionItem> transactionItemList = new();
+        public ICommand DeleteCommand { get; private set; }
+        public ICommand CopyCommand { get; private set; }
         public TransactionPage()
         {
             InitializeComponent();
-            TransactionItemList = new List<TransactionItem>();
+            DeleteCommand = new RelayCommand(DeleteSelectedItems);
+            CopyCommand = new RelayCommand(CopySelectedItems);
+
+            DataContext = this;
+            GetTransactionList();
+            TransationsDataGrid.ItemsSource = transactionItemList;
+            Categories.ItemsSource = _controller.GetAllCategories().Select(c => c.Name).ToList();
+        }
+        private void DeleteSelectedItems()
+        {
+            if (transactionItemList?.Any(item => item.IsSelected) != true)
+                return;
+            var indexes = transactionItemList
+                .Where(item => item.IsSelected)
+                .Select(item => item.Id)
+                .ToList();
+
+            _controller.DeleteMany(indexes, MainWindow.LoggedInUser);
+            RefreshTransactionList();
+        }
+
+        private void CopySelectedItems()
+        {
+            if(transactionItemList?.Any(item => item.IsSelected) != true)
+                return;
+            transactionItemList
+                .Where(item => item.IsSelected)
+                .ToList()
+                .ForEach(item => _controller.Copy(MainWindow.LoggedInUser, item.Id));
+            RefreshTransactionList();
+        }
+
+        private void GetTransactionList() 
+        {
+            transactionItemList.Clear();
             foreach (var tran in _controller.GetAll(MainWindow.LoggedInUser))
             {
-                TransactionItemList.Add(new TransactionItem
+                transactionItemList.Add(new TransactionItem
                 {
                     Id = tran.Key,
                     Title = tran.Value.Title,
@@ -45,13 +79,13 @@ namespace Home_budget_graphic
                     Category = _controller.GetCategoryName(tran.Value.CategoryID)
                 });
             }
-            CategoryItemList = _controller.GetAllCategories().Select(c => c.Name).ToList();
-            // Tworzenie komendy Delete
-            DeleteCommand = new RelayCommand(DeleteSelectedItems);
+        }
+        private void RefreshTransactionList()
+        {
+            GetTransactionList();
 
-            // Tworzenie komendy Copy
-            CopyCommand = new RelayCommand(CopySelectedItems);
-            DataContext = this;
+            TransationsDataGrid.ItemsSource = null;
+            TransationsDataGrid.ItemsSource = transactionItemList;
         }
         private void Transaction_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
@@ -61,22 +95,6 @@ namespace Home_budget_graphic
         private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             MouseWheelHandler.HandlePreviewMouseWheel(sender, e); // Wywołaj metodę pomocniczą
-        }
-        private void DeleteSelectedItems()
-        {
-            List<int> indexes = new List<int>();
-            var itemsToDelete = TransactionItemList.Where(item => item.IsSelected).ToList();
-            foreach (var item in itemsToDelete)
-            {
-                indexes.Add(item.Id);
-                TransactionItemList.Remove(item);
-            }
-            _controller.DeleteMany(indexes, MainWindow.LoggedInUser);
-        }
-
-        private void CopySelectedItems()
-        {
-            var itemsToCopy = TransactionItemList.Where(item => item.IsSelected).ToList();
         }
     }
 }

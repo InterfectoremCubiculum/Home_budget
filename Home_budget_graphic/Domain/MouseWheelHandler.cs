@@ -26,7 +26,7 @@ namespace Home_budget_graphic.Domain
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parent = VisualTreeHelper.GetParent(child);
-            while (parent != null && !(parent is T))
+            while (parent != null && parent is not T)
             {
                 parent = VisualTreeHelper.GetParent(parent);
             }

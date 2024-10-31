@@ -14,7 +14,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Menu>
+        <Menu Grid.Row="0">
             <MenuItem
                 Command="{Binding DeleteCommand}"
                 Header="_Delete"
@@ -41,7 +41,6 @@
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
-            ItemsSource="{Binding TransactionItemList}"
             SelectionMode="Extended"
             SelectionUnit="Cell"
             RowEditEnding="Transaction_RowEditEnding"
@@ -94,10 +93,10 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <materialDesign:DataGridComboBoxColumn
+                    x:Name="Categories"
                     Width="150"
                     Header="Category"
                     IsEditable="True"
-                    ItemsSourceBinding="{Binding DataContext.CategoryItemList, RelativeSource={RelativeSource AncestorType=Page}}"
                     SelectedValueBinding="{Binding Category, Mode=TwoWay}">
                 </materialDesign:DataGridComboBoxColumn>
                 <DataGridTextColumn 
