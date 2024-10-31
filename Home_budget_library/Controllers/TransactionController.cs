@@ -56,7 +56,7 @@ namespace Home_budget_library.Controllers
             }
         }
 
-        public async Task Edit(Transaction transaction, string newTitle, decimal newValue, DateOnly newDate, string newDescription, int categoryID)
+        public void Edit(Transaction transaction, string newTitle, decimal newValue, DateOnly newDate, string newDescription, int categoryID)
         {
             transaction.Title = newTitle;
             transaction.Description = newDescription;
@@ -64,7 +64,7 @@ namespace Home_budget_library.Controllers
             transaction.Value = newValue;
             transaction.CategoryID = categoryID;
             _context.Update(transaction);
-            await _context.SaveChangesAsync();
+            Save();
         }
         public bool Save()
         {

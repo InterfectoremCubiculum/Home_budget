@@ -10,8 +10,33 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="TransactionPage">
     <Grid Margin="20,20,20,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem
+                Command="{Binding DeleteCommand}"
+                Header="_Delete"
+                Icon="{materialDesign:PackIcon Kind=Delete}" />
+            <Separator Width="35" RenderTransformOrigin="0.5,0.5">
+                <Separator.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Separator.RenderTransform>
+            </Separator>
+            <MenuItem
+                Command="{Binding CopyCommand}"
+                Header="_Copy"
+                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
+        </Menu>
         <DataGrid
-
+            Name="TransationsDataGrid"
+            Grid.Row="1"
             ScrollViewer.VerticalScrollBarVisibility="Disabled"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             AutoGenerateColumns="False"
@@ -23,6 +48,12 @@
             PreviewMouseWheel="DataGrid_PreviewMouseWheel">
 
             <DataGrid.Columns>
+                <DataGridCheckBoxColumn
+                    HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                    Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                </DataGridCheckBoxColumn>
                 <DataGridTextColumn 
                     Header="ID" 
                     Binding="{Binding Id}" 
@@ -38,7 +69,7 @@
                     />
                 <DataGridTextColumn 
                     Header="Value" 
-                    Width="150"
+                    Width="100"
                     ElementStyle="{StaticResource DataGridTextColumnTextBlockStyle}"
                     EditingElementStyle="{StaticResource DataGridTextColumnTextBoxStyle}">
                     <DataGridTextColumn.Binding>
@@ -49,14 +80,19 @@
                             </Binding.ValidationRules>
                         </Binding>
                     </DataGridTextColumn.Binding>
-                  </DataGridTextColumn>
-                    <DataGridTextColumn 
-                    Header="Date" 
-                    Binding="{Binding Date}" 
-                    Width="100"
-                    ElementStyle="{StaticResource DataGridTextColumnTextBlockStyle}"
-                    EditingElementStyle="{StaticResource DataGridTextColumnTextBoxStyle}"                    
-                    />
+                 </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Date" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" SelectedDateFormat="Short" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" SelectedDateFormat="Short"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
                 <materialDesign:DataGridComboBoxColumn
                     Width="150"
                     Header="Category"

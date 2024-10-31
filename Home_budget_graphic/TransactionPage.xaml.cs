@@ -27,6 +27,8 @@ namespace Home_budget_graphic
         public List<TransactionItem> TransactionItemList { get; set; }
         public List<string> CategoryItemList { get; set; }
         public static TransactionController _controller = new TransactionController();
+        public ICommand DeleteCommand { get; }
+        public ICommand CopyCommand { get; }
         public TransactionPage()
         {
             InitializeComponent();
@@ -39,11 +41,16 @@ namespace Home_budget_graphic
                     Title = tran.Value.Title,
                     Value = tran.Value.Value,
                     Description = tran.Value.Description,
-                    Date = tran.Value.date.ToString(),
+                    Date = tran.Value.date.ToDateTime(TimeOnly.MinValue),
                     Category = _controller.GetCategoryName(tran.Value.CategoryID)
                 });
             }
             CategoryItemList = _controller.GetAllCategories().Select(c => c.Name).ToList();
+            // Tworzenie komendy Delete
+            DeleteCommand = new RelayCommand(DeleteSelectedItems);
+
+            // Tworzenie komendy Copy
+            CopyCommand = new RelayCommand(CopySelectedItems);
             DataContext = this;
         }
         private void Transaction_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
@@ -54,6 +61,22 @@ namespace Home_budget_graphic
         private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             MouseWheelHandler.HandlePreviewMouseWheel(sender, e); // Wywołaj metodę pomocniczą
+        }
+        private void DeleteSelectedItems()
+        {
+            List<int> indexes = new List<int>();
+            var itemsToDelete = TransactionItemList.Where(item => item.IsSelected).ToList();
+            foreach (var item in itemsToDelete)
+            {
+                indexes.Add(item.Id);
+                TransactionItemList.Remove(item);
+            }
+            _controller.DeleteMany(indexes, MainWindow.LoggedInUser);
+        }
+
+        private void CopySelectedItems()
+        {
+            var itemsToCopy = TransactionItemList.Where(item => item.IsSelected).ToList();
         }
     }
 }

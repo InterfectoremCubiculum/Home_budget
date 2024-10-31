@@ -24,7 +24,10 @@ namespace Home_budget_library.Controllers
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return false;
 
-            return _context.Users.Any(u => u.Name == username && u.Password == password);
+            return _context.Users
+                .AsEnumerable() // Zapytanie zostanie wykonane w pamięci
+                .Any(u => u.Name.Equals(username, StringComparison.Ordinal) &&
+                  u.Password.Equals(password, StringComparison.Ordinal));
         }
 
         /// <summary>

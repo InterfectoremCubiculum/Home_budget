@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 using Home_budget_library.Controllers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Home_budget_graphic.Domain
 {
@@ -25,7 +26,7 @@ namespace Home_budget_graphic.Domain
                             transactionFromModel,
                             updatedTransaction.Title,
                             updatedTransaction.Value,
-                            DateOnly.Parse(updatedTransaction.Date),
+                            DateOnly.FromDateTime(updatedTransaction.Date),
                             updatedTransaction.Description,
                             controller.GetCategoryId(updatedTransaction.Category)
                         );

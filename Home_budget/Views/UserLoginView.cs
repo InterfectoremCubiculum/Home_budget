@@ -104,6 +104,7 @@ namespace Home_budget.Views
                         return;
                     default:
                         AnsiConsole.Clear();
+                        AnsiConsole.Write(layout);
                         break;
                 }
             }

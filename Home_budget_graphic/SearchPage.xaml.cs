@@ -64,7 +64,7 @@ namespace Home_budget_graphic
                     Title = tran.Value.Title,
                     Value = tran.Value.Value,
                     Description = tran.Value.Description,
-                    Date = tran.Value.date.ToString(),
+                    Date = tran.Value.date.ToDateTime(TimeOnly.MinValue),
                     Category = _controller.GetCategoryName(tran.Value.CategoryID)
                 });
             }

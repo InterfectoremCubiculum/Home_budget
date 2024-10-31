@@ -65,7 +65,7 @@
                     />
                 <DataGridTextColumn 
                     Header="Value" 
-                    Width="150"
+                    Width="100"
                     ElementStyle="{StaticResource DataGridTextColumnTextBlockStyle}"
                     EditingElementStyle="{StaticResource DataGridTextColumnTextBoxStyle}">
                     <DataGridTextColumn.Binding>
@@ -77,13 +77,18 @@
                         </Binding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
-                <DataGridTextColumn 
-                    Header="Date" 
-                    Binding="{Binding Date}" 
-                    Width="100"
-                    ElementStyle="{StaticResource DataGridTextColumnTextBlockStyle}"
-                    EditingElementStyle="{StaticResource DataGridTextColumnTextBoxStyle}"                    
-                    />
+                <DataGridTemplateColumn Header="Date" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" SelectedDateFormat="Short" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" SelectedDateFormat="Short"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
                 <materialDesign:DataGridComboBoxColumn
                     x:Name="Categories"
                     Width="150"
