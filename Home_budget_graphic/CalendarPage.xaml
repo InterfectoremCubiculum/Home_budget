@@ -4,11 +4,48 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Home_budget_graphic"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CalendarPage">
+    <Page.Resources>
+        <Color x:Key="SolidColorBrushIncome">#FFB23700</Color>
+        <Color x:Key="SolidColorBrushColorExpenses">#FFB29800</Color>
+    </Page.Resources>
 
-    <Grid Margin="87 0 0 0">
-        <TextBlock Text="Welcome to the Calendar Page" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Panel.ZIndex="1" Margin="190,43,0,0">
+            <TextBlock 
+                Margin="0,0,10,0"
+                Text="Incomes"
+                VerticalAlignment="Center" 
+                FontSize="24"
+                Style="{DynamicResource MaterialDesignLabelMediumTextBlock}"/>
+            <ToggleButton
+                IsChecked="false"
+                Click="CalendarModeToggleButton_Click"
+                Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                ToolTip="Show Incomes or Expenses ">
+                <materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
+                    <SolidColorBrush Color="{DynamicResource SolidColorBrushIncome}" />
+                </materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
+                <materialDesign:ToggleButtonAssist.SwitchTrackOffBackground>
+                    <SolidColorBrush Color="{DynamicResource SolidColorBrushColorExpenses}" />
+                </materialDesign:ToggleButtonAssist.SwitchTrackOffBackground>
+            </ToggleButton>
+            <TextBlock
+                Margin="10,0,0,0"
+                Text="Expenses"
+                VerticalAlignment="Center" 
+                FontSize="24"
+                Style="{DynamicResource MaterialDesignLabelMediumTextBlock}"/>
+        </StackPanel>
+        <Calendar 
+            SelectedDate="11/16/2024"
+            IsTodayHighlighted ="False" 
+            SelectionMode="MultipleRange" 
+            Name="DisplayCalendar"  
+            DisplayDateChanged="Calendar_DisplayDateChanged">
+        </Calendar>
     </Grid>
 </Page>

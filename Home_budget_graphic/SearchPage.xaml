@@ -68,13 +68,15 @@
             SelectionMode="Extended"
             SelectionUnit="Cell"
             RowEditEnding="Transaction_RowEditEnding"
-            PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+            PreviewMouseWheel="DataGrid_PreviewMouseWheel"
+            VirtualizingStackPanel.IsVirtualizing="True"
+            VirtualizingStackPanel.VirtualizationMode="Recycling">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn
                     HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
                     EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                     ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
-                    Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
                 </DataGridCheckBoxColumn>
                 <DataGridTextColumn 
                     Header="ID" 
@@ -106,12 +108,18 @@
                 <DataGridTemplateColumn Header="Date" Width="130">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" SelectedDateFormat="Short" />
+                            <DatePicker 
+                                SelectedDate="{Binding Date}" 
+                                SelectedDateFormat="Short" 
+                                SelectedDateChanged="DatePicker_SelectedDateChanged"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" SelectedDateFormat="Short"/>
+                            <DatePicker 
+                                SelectedDate="{Binding Date}" 
+                                SelectedDateFormat="Short"
+                                SelectedDateChanged="DatePicker_SelectedDateChanged"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
@@ -120,7 +128,7 @@
                     Width="150"
                     Header="Category"
                     IsEditable="True"
-                    SelectedValueBinding="{Binding Category, Mode=TwoWay}">
+                    SelectedValueBinding="{Binding Category}">
                 </materialDesign:DataGridComboBoxColumn>
                 <DataGridTextColumn 
                     ElementStyle="{StaticResource DataGridTextColumnTextBlockStyle}"

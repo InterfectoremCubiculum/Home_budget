@@ -32,30 +32,32 @@ namespace Home_budget_library.Controllers
             return _context.Categories.First(cat => cat.Id == categoryID).Name;
         }
 
-        public void DeleteMany(List<int> indexes, int userId, bool isThisTransactionId = false)
+        public void DeleteMany(IEnumerable<int> indexes, int userId)
         {
-            if (isThisTransactionId)
-            {
-                var transactionsToRemove = _context.Transactions.Where(t => indexes.Contains(t.Id)).ToList();
-                if (transactionsToRemove.Count != 0)
-                {
-                    _context.Transactions.RemoveRange(transactionsToRemove);
-                    _context.SaveChanges();
-                }
-            }
-            else
-            {
-                var dicTransactions = GetAll(userId);
-                var transactionList = dicTransactions.Keys.ToList();
+            var dicTransactions = GetAll(userId);
+            var transactionList = dicTransactions.Keys.ToList();
 
-                var transactionsToRemove = indexes
-                    .Where(i => i > 0 && i <= transactionList.Count)
-                    .Select(i => dicTransactions[i]).ToList();
-                _context.Transactions.RemoveRange(transactionsToRemove);
-                _context.SaveChanges();
-            }
+            var transactionsToRemove = indexes
+                .Where(i => i > 0 && i <= transactionList.Count)
+                .Select(i => dicTransactions[i]).ToList();
+            _context.Transactions.RemoveRange(transactionsToRemove);
+            _context.SaveChanges();
         }
-
+        public Dictionary<DateOnly, List<Decimal>> ValuesByDays(int userID)
+        {
+            return _context.Transactions
+                .Where(transaction => transaction.UserID == userID)
+                .Select(transaction => new
+                {
+                    _Date = transaction.date,
+                    _Value = transaction.Value
+                })
+                .GroupBy(atransaction => atransaction._Date)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Select(aTransaction => aTransaction._Value).ToList()
+                );
+        }
         public void Edit(Transaction transaction, string newTitle, decimal newValue, DateOnly newDate, string newDescription, int categoryID)
         {
             transaction.Title = newTitle;
@@ -91,7 +93,6 @@ namespace Home_budget_library.Controllers
                 .Where(kvp => kvp.Value.Title.Contains(title, StringComparison.CurrentCultureIgnoreCase))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
-
 
         public Transaction? Copy(int userID, int transactionId)
         {

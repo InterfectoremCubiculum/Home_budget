@@ -146,12 +146,11 @@
                             <ColumnDefinition Width="800*"/>
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" Height="37" VerticalAlignment="Bottom">
-                            <ToggleButton x:Name="MenuToggleButton"
-                                Margin="5,0,24,0"
-                                Click="MenuToggleButton_OnClick"
-                                IsChecked="False"
-                                Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+                        <StackPanel 
+                            Grid.Column="0" 
+                            Orientation="Horizontal" 
+                            Height="37" 
+                            VerticalAlignment="Bottom">
                             <Button 
                                 Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark}"
                                 Content="{materialDesign:PackIcon Kind=ArrowLeft, Size=24}"
@@ -166,13 +165,15 @@
                                 Click="ForwardButton_Click"
                                 x:Name="ForwardButton"/>
                         </StackPanel>
-                        <TextBlock Grid.Column="2"
+                        <TextBlock 
+                            Grid.Column="2"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             AutomationProperties.Name="Home Budget"
                             Style="{StaticResource MaterialDesignDisplaySmallTextBlock}"
                             Text="Home Budget" Margin="0,0,130,0" />
-                        <materialDesign:PopupBox Grid.Column="3"
+                        <materialDesign:PopupBox 
+                            Grid.Column="3"
                             PlacementMode="BottomAndAlignRightEdges"
                             StaysOpen="False" HorizontalAlignment="Center">
                             <StackPanel>
@@ -205,7 +206,10 @@
                         </materialDesign:PopupBox>
                     </Grid>
                 </materialDesign:ColorZone>
-                <Grid Width="80" Background="{DynamicResource MaterialDesignCardBackground}" HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <Grid 
+                    Width="80" Background="{DynamicResource MaterialDesignCardBackground}" 
+                    HorizontalAlignment="Left" 
+                    ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"/>
                         <ColumnDefinition Width="33*"/>
@@ -239,7 +243,10 @@
                     </ListBox>
                 </Grid>
                 <Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Style="{StaticResource MaterialDesignScrollViewer}">
+                    <ScrollViewer 
+                        VerticalScrollBarVisibility="Auto" 
+                        HorizontalScrollBarVisibility="Auto" 
+                        Style="{StaticResource MaterialDesignScrollViewer}">
                         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
                     </ScrollViewer>
                 </Grid>

@@ -25,7 +25,7 @@ namespace Home_budget_graphic
     /// </summary>
     public partial class SearchPage : Page
     {
-        private List<TransactionItem> TransactionItemList { get; set; }
+        private List<TransactionItem> transactionItemList { get; set; }
         private static TransactionController _controller = new();
         public ICommand DeleteCommand { get; }
         public ICommand CopyCommand { get; }
@@ -58,10 +58,10 @@ namespace Home_budget_graphic
         }
         private void HandleSearch(string searchText="")
         {
-            TransactionItemList = new();
+            transactionItemList = new();
             foreach (var tran in _controller.Search(searchText, MainWindow.LoggedInUser))
             {
-                TransactionItemList.Add(new TransactionItem
+                transactionItemList.Add(new TransactionItem
                 {
                     Id = tran.Key,
                     Title = tran.Value.Title,
@@ -72,14 +72,14 @@ namespace Home_budget_graphic
                 });
             }
             TransationsDataGrid.ItemsSource = null;
-            TransationsDataGrid.ItemsSource = TransactionItemList;
+            TransationsDataGrid.ItemsSource = transactionItemList;
         }
         private void DeleteSelectedItems()
         {
-            if (TransactionItemList?.Any(item => item.IsSelected) != true)
+            if (transactionItemList?.Any(item => item.IsSelected) != true)
                 return;
 
-            var indexes = TransactionItemList
+            var indexes = transactionItemList
                 .Where(item => item.IsSelected)
                 .Select(item => item.Id)
                 .ToList();
@@ -89,10 +89,10 @@ namespace Home_budget_graphic
         }
         private void CopySelectedItems()
         {
-            if (TransactionItemList?.Any(item => item.IsSelected) != true)
+            if (transactionItemList?.Any(item => item.IsSelected) != true)
                 return;
 
-            TransactionItemList
+            transactionItemList
                 .Where(item => item.IsSelected)
                 .ToList()
                 .ForEach(item => _controller.Copy(MainWindow.LoggedInUser, item.Id));
@@ -102,6 +102,10 @@ namespace Home_budget_graphic
         private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e) 
         {
             MouseWheelHandler.HandlePreviewMouseWheel(sender, e);
+        }
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TransactionEdit.DatePicker_SelectedDateChanged(sender, e, _controller);
         }
         private void Transaction_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {

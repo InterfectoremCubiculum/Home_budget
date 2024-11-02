@@ -1,23 +1,8 @@
 ﻿using Home_budget_graphic.Domain;
 using Home_budget_library.Controllers;
-using Home_budget_library.Models;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using System.Windows;
+using System.Collections.ObjectModel;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 namespace Home_budget_graphic
 {
     /// <summary>
@@ -26,7 +11,7 @@ namespace Home_budget_graphic
     public partial class TransactionPage : Page
     {
         private readonly static TransactionController _controller = new();
-        private List<TransactionItem> transactionItemList = new();
+        private ObservableCollection<TransactionItem> transactionItemList = new ObservableCollection<TransactionItem>();
         public ICommand DeleteCommand { get; private set; }
         public ICommand CopyCommand { get; private set; }
         public TransactionPage()
@@ -40,14 +25,14 @@ namespace Home_budget_graphic
             TransationsDataGrid.ItemsSource = transactionItemList;
             Categories.ItemsSource = _controller.GetAllCategories().Select(c => c.Name).ToList();
         }
+
         private void DeleteSelectedItems()
         {
-            if (transactionItemList?.Any(item => item.IsSelected) != true)
-                return;
             var indexes = transactionItemList
                 .Where(item => item.IsSelected)
-                .Select(item => item.Id)
-                .ToList();
+                .Select(item => item.Id);
+
+            if (!indexes.Any()) return;
 
             _controller.DeleteMany(indexes, MainWindow.LoggedInUser);
             RefreshTransactionList();
@@ -55,7 +40,7 @@ namespace Home_budget_graphic
 
         private void CopySelectedItems()
         {
-            if(transactionItemList?.Any(item => item.IsSelected) != true)
+            if (transactionItemList?.Any(item => item.IsSelected) != true)
                 return;
             transactionItemList
                 .Where(item => item.IsSelected)
@@ -64,7 +49,7 @@ namespace Home_budget_graphic
             RefreshTransactionList();
         }
 
-        private void GetTransactionList() 
+        private void GetTransactionList()
         {
             transactionItemList.Clear();
             foreach (var tran in _controller.GetAll(MainWindow.LoggedInUser))
@@ -91,7 +76,10 @@ namespace Home_budget_graphic
         {
             TransactionEdit.Transaction_RowEditEnding(sender, e, _controller);
         }
-
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TransactionEdit.DatePicker_SelectedDateChanged(sender, e, _controller);
+        }
         private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             MouseWheelHandler.HandlePreviewMouseWheel(sender, e); // Wywołaj metodę pomocniczą

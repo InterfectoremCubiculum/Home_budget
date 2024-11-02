@@ -6,7 +6,6 @@ namespace Home_budget_graphic.Domain
 {
     public static class TransactionEdit
     {
-
         public static void Transaction_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e, TransactionController controller)
         {
             if (sender is DataGrid dataGrid)
@@ -30,6 +29,27 @@ namespace Home_budget_graphic.Domain
                         );
                     }
                 }), System.Windows.Threading.DispatcherPriority.Background);
+        }
+        public static void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e, TransactionController controller)
+        {
+            if (sender is DatePicker datePicker)
+            {
+                var currentTransactionItem = datePicker.DataContext as TransactionItem;
+
+                if (datePicker.SelectedDate.HasValue)
+                {
+                    var transactionFromModel = controller.Get(MainWindow.LoggedInUser, currentTransactionItem.Id);
+                    controller.Edit(
+                        transactionFromModel,
+                        currentTransactionItem.Title,
+                        currentTransactionItem.Value,
+                        DateOnly.FromDateTime(datePicker.SelectedDate.Value),
+                        currentTransactionItem.Description,
+                        controller.GetCategoryId(currentTransactionItem.Category)
+                    );
+                }
+
+            }
         }
     }
 }

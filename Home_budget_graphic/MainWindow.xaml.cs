@@ -1,17 +1,10 @@
 ﻿using Home_budget_graphic.Domain;
-using Home_budget_library;
+using Home_budget_library.Controllers;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
-using System.Configuration;
-using System.Diagnostics;
-using System.Threading;
-using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
-using Home_budget_library.Controllers;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Navigation;
-using ControlzEx.Theming;
 
 
 namespace Home_budget_graphic
@@ -91,10 +84,10 @@ namespace Home_budget_graphic
                 },
             ];
         }
-        private void NavList_SelectionChanged(object sender, SelectionChangedEventArgs e) 
+        private void NavList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is ListBox listbox)
-                switch (listbox.SelectedIndex ) 
+                switch (listbox.SelectedIndex)
                 {
                     case 0:
                         MainFrame.Navigate(new HomePage());
@@ -117,8 +110,8 @@ namespace Home_budget_graphic
 
 
 
-        private async void MenuToggleButton_OnClick(object sender, RoutedEventArgs e) { }
-        private async void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
+        private void MenuToggleButton_OnClick(object sender, RoutedEventArgs e) { }
+        private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
             => ModifyTheme(DarkModeToggleButton.IsChecked == true);
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -140,27 +133,27 @@ namespace Home_budget_graphic
             BackButton.IsEnabled = MainFrame.CanGoBack;
             ForwardButton.IsEnabled = MainFrame.CanGoForward;
         }
-        private void LogOut_Click(object sender, RoutedEventArgs e) 
+        private void LogOut_Click(object sender, RoutedEventArgs e)
         {
             LoggedInUser = -1;
             LoginGrid.Visibility = Visibility.Visible;
             AppGrid.Visibility = Visibility.Hidden;
 
         }
-        private async void Login_Click(object sender, RoutedEventArgs e) 
+        private async void Login_Click(object sender, RoutedEventArgs e)
         {
             string username = LoginUsernameTextBox.Text;
             string password = LoginPasswordBox.Password;
-            if (_userController.ValidateLogin(username, password)) 
+            if (_userController.ValidateLogin(username, password))
             {
-                LoggedInUser =  _userController.GetUserID(username);
+                LoggedInUser = _userController.GetUserID(username);
                 LoginGrid.Visibility = Visibility.Hidden;
                 AppGrid.Visibility = Visibility.Visible;
                 await ClearAllTextBoxes(LoginGrid);
                 MainFrame.Navigate(new HomePage());
             }
             else
-                await SnackbarAtive("There is no such user or the password is incorrect");
+                SnackbarAtive("There is no such user or the password is incorrect");
         }
         private async void CreateAccount_Click(object sender, RoutedEventArgs e)
         {
@@ -168,27 +161,27 @@ namespace Home_budget_graphic
             string password = CreateAccountPasswordBox.Password;
             string repeatPassword = CreateAccountPasswordBox2.Password;
             _userController.Create_User_Check_UserName(username);
-            switch (_userController.Create_User_Check_UserName(username)) 
+            switch (_userController.Create_User_Check_UserName(username))
             {
                 case 0:
                     break;
                 case 1:
-                    await SnackbarAtive("Too short username");
+                    SnackbarAtive("Too short username");
                     return;
                 case 2:
-                    await SnackbarAtive("Username is not available");
+                    SnackbarAtive("Username is not available");
                     return;
                 case 3:
-                    await SnackbarAtive("Too short username and also not available");
+                    SnackbarAtive("Too short username and also not available");
                     return;
                 default:
                     break;
             }
             if (!_userController.Create_User_Check_Password(password))
-                await SnackbarAtive("Too short password");
+                SnackbarAtive("Too short password");
             else if (password != repeatPassword)
-                await SnackbarAtive("Passwords are diffrent");
-            else 
+                SnackbarAtive("Passwords are diffrent");
+            else
             {
                 _userController.AddUser(username, password);
                 LoggedInUser = _userController.GetUserID(username);
@@ -199,7 +192,7 @@ namespace Home_budget_graphic
 
 
         }
-        private async Task SnackbarAtive(string message, float snackbarDuration=3) 
+        private void SnackbarAtive(string message, float snackbarDuration = 3)
         {
             Snackbar.MessageQueue?.Enqueue(
                $"{message}",
@@ -224,9 +217,9 @@ namespace Home_budget_graphic
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
                 if (child is TextBox textBox)
-                    textBox.Text = ""; 
+                    textBox.Text = "";
                 else if (child is PasswordBox passwordBox)
-                    passwordBox.Password = ""; 
+                    passwordBox.Password = "";
                 else
                     await ClearAllTextBoxes(child);
             }
