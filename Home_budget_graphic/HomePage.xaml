@@ -1,14 +1,106 @@
 ﻿<Page x:Class="Home_budget_graphic.HomePage"
+
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Home_budget_graphic"
       mc:Ignorable="d" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+      xmlns:domain="clr-namespace:Home_budget_graphic.Domain"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="HomePage">
+      Title="HomePage"
+      
+      >
 
-    <Grid>
-        <TextBlock Text="Welcome to the Home Page" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+    <Grid Margin="0,20,0,20">
+        <materialDesign:Card 
+            Grid.Row="1"             
+            Width="400">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="360"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <TextBox   
+                    Name="Title"
+                    Grid.Row="0"
+                    materialDesign:HintAssist.Hint="Title" 
+                    Margin="12,5,12,5"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    materialDesign:HintAssist.FloatingScale="0.5"
+                    FontSize="20">
+                </TextBox>
+                <TextBox   
+                    Name="Value"
+                    Grid.Row="1"
+                    materialDesign:HintAssist.Hint="Value" 
+                    Margin="12,5,12,5"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    materialDesign:HintAssist.FloatingScale="0.5"
+                    FontSize="20">
+                </TextBox>
+                <DatePicker     
+                    Grid.Row="2"
+                    Name="Date"
+                    Margin="12,5,12,5"
+                    SelectedDateFormat="Short" 
+                    materialDesign:HintAssist.Hint="Date"       
+                    materialDesign:HintAssist.FloatingScale="0.5"
+                    FontSize="20"
+                    />
+
+                <ComboBox
+                    Grid.Row="3"
+                    Name="Category"
+                    Margin="12,5,12,5"
+                    materialDesign:HintAssist.Hint="Category" 
+                    ItemsSource="{Binding DataContext.CategoryItemList, RelativeSource={RelativeSource AncestorType=Page}}"
+                    Style="{StaticResource MaterialDesignComboBox}"
+                    FontSize="20"
+                    materialDesign:HintAssist.FloatingScale="0.5"
+                    />
+                <TextBox   
+                    Name="Description"
+                    Height="340"
+                    Grid.Row="4"
+                    Margin="12,15,12,5"
+                    VerticalAlignment="Top"
+                    TextWrapping="Wrap"
+                    FontSize="20"
+                    VerticalScrollBarVisibility="Auto"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    AcceptsReturn="True"
+                    materialDesign:HintAssist.Hint="Description" 
+                    />
+                <StackPanel
+                    Grid.Row="5" 
+                    VerticalAlignment="Bottom" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,0,0,10">
+                    <Button
+                        Content="{materialDesign:PackIcon Kind=Add,Size=24}" 
+                        VerticalAlignment="Top" 
+                        Margin="10,0,10,0"
+                        Click="OnClick_AddNewTransaction"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Add Transaction"
+                        />
+                    <Button
+                        Content="{materialDesign:PackIcon Kind=Cancel,Size=24}" 
+                        VerticalAlignment="Top" 
+                        Margin="10,0,10,0"
+                        Click="OnClick_ClearForms"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        ToolTip="Clear Inputs"
+                        />
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </Page>

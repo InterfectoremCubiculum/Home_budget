@@ -1,19 +1,21 @@
-﻿using Home_budget_graphic.Domain;
+﻿// TransactionPage.xaml.cs
+using Home_budget_graphic.Domain;
 using Home_budget_library.Controllers;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+
 namespace Home_budget_graphic
 {
-    /// <summary>
-    /// Logika interakcji dla klasy TransactionPage.xaml
-    /// </summary>
     public partial class TransactionPage : Page
     {
         private readonly static TransactionController _controller = new();
         private ObservableCollection<TransactionItem> transactionItemList = new ObservableCollection<TransactionItem>();
+
         public ICommand DeleteCommand { get; private set; }
         public ICommand CopyCommand { get; private set; }
+
         public TransactionPage()
         {
             InitializeComponent();
@@ -21,9 +23,42 @@ namespace Home_budget_graphic
             CopyCommand = new RelayCommand(CopySelectedItems);
 
             DataContext = this;
-            GetTransactionList();
+            LoadTransactionsAsync(); 
+        }
+
+        private async void LoadTransactionsAsync()
+        {
+            await GetTransactionListAsync();
             TransationsDataGrid.ItemsSource = transactionItemList;
             Categories.ItemsSource = _controller.GetAllCategories().Select(c => c.Name).ToList();
+        }
+
+        private async Task GetTransactionListAsync()
+        {
+            transactionItemList.Clear();
+            var transactions = await Task.Run(() => _controller.GetAll(MainWindow.LoggedInUser));
+
+            foreach (var tran in transactions)
+            {
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    transactionItemList.Add(new TransactionItem
+                    {
+                        Id = tran.Key,
+                        Title = tran.Value.Title,
+                        Value = tran.Value.Value,
+                        Description = tran.Value.Description,
+                        Date = tran.Value.date.ToDateTime(TimeOnly.MinValue),
+                        Category = _controller.GetCategoryName(tran.Value.CategoryID)
+                    });
+                });
+            }
+        }
+
+        private async void RefreshTransactionList()
+        {
+            await GetTransactionListAsync();
+            TransationsDataGrid.ItemsSource = transactionItemList;
         }
 
         private void DeleteSelectedItems()
@@ -49,40 +84,19 @@ namespace Home_budget_graphic
             RefreshTransactionList();
         }
 
-        private void GetTransactionList()
-        {
-            transactionItemList.Clear();
-            foreach (var tran in _controller.GetAll(MainWindow.LoggedInUser))
-            {
-                transactionItemList.Add(new TransactionItem
-                {
-                    Id = tran.Key,
-                    Title = tran.Value.Title,
-                    Value = tran.Value.Value,
-                    Description = tran.Value.Description,
-                    Date = tran.Value.date.ToDateTime(TimeOnly.MinValue),
-                    Category = _controller.GetCategoryName(tran.Value.CategoryID)
-                });
-            }
-        }
-        private void RefreshTransactionList()
-        {
-            GetTransactionList();
-
-            TransationsDataGrid.ItemsSource = null;
-            TransationsDataGrid.ItemsSource = transactionItemList;
-        }
         private void Transaction_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
             TransactionEdit.Transaction_RowEditEnding(sender, e, _controller);
         }
+
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             TransactionEdit.DatePicker_SelectedDateChanged(sender, e, _controller);
         }
+
         private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            MouseWheelHandler.HandlePreviewMouseWheel(sender, e); // Wywołaj metodę pomocniczą
+            MouseWheelHandler.HandlePreviewMouseWheel(sender, e);
         }
     }
 }

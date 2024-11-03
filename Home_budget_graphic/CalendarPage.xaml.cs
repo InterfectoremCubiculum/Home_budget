@@ -1,7 +1,9 @@
 ﻿
 using Home_budget_library.Controllers;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Calendar = System.Windows.Controls.Calendar;
 
 namespace Home_budget_graphic

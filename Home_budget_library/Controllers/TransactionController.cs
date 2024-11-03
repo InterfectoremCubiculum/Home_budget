@@ -119,10 +119,5 @@ namespace Home_budget_library.Controllers
         {
             return _context.Categories.ToList();
         }
-        public static bool ValidateValue(decimal value)
-        {
-
-            return value == Math.Round(value, 2);
-        }
     }
 }

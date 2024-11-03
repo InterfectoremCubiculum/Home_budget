@@ -7,20 +7,27 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="CalendarPage">
+      Title="CalendarPage" Cursor="">
     <Page.Resources>
         <Color x:Key="SolidColorBrushIncome">#FFB23700</Color>
         <Color x:Key="SolidColorBrushColorExpenses">#FFB29800</Color>
+
+        <Style x:Key="ScaledCalendarDayButton" TargetType="{x:Type CalendarDayButton}" BasedOn="{StaticResource MaterialDesignCalendarDayButton}">
+            <Setter Property="Width" Value="56"/>
+            <Setter Property="Height" Value="56"/>
+            <Setter Property="FontSize" Value="28"/>
+        </Style>
     </Page.Resources>
 
     <Grid>
-        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Panel.ZIndex="1" Margin="190,43,0,0">
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Panel.ZIndex="1" Margin="220,45,0,0">
             <TextBlock 
                 Margin="0,0,10,0"
                 Text="Incomes"
                 VerticalAlignment="Center" 
                 FontSize="24"
-                Style="{DynamicResource MaterialDesignLabelMediumTextBlock}"/>
+                FontWeight="Bold"
+                />
             <ToggleButton
                 IsChecked="false"
                 Click="CalendarModeToggleButton_Click"
@@ -38,14 +45,16 @@
                 Text="Expenses"
                 VerticalAlignment="Center" 
                 FontSize="24"
-                Style="{DynamicResource MaterialDesignLabelMediumTextBlock}"/>
+                FontWeight="Bold"
+                />
         </StackPanel>
         <Calendar 
-            SelectedDate="11/16/2024"
+            CalendarDayButtonStyle="{StaticResource ScaledCalendarDayButton}"
             IsTodayHighlighted ="False" 
             SelectionMode="MultipleRange" 
             Name="DisplayCalendar"  
-            DisplayDateChanged="Calendar_DisplayDateChanged">
-        </Calendar>
+            DisplayDateChanged="Calendar_DisplayDateChanged"/>
+        <Rectangle Fill="Transparent" Visibility="Hidden" IsHitTestVisible="True" Margin="0,125,0,0" />
+
     </Grid>
 </Page>

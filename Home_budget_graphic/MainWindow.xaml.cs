@@ -18,6 +18,7 @@ namespace Home_budget_graphic
         public List<NavItem> NavList { get; set; }
         public static int LoggedInUser { get; private set; }
         private static UserController _userController;
+        private static PaletteHelper _paletteHelper;
 
         public MainWindow()
         {
@@ -27,28 +28,12 @@ namespace Home_budget_graphic
             LoggedInUser = -1;
             UpdateNavigationButtons();
             MainFrame.Navigated += MainFrame_Navigated;
-
-            var paletteHelper = new PaletteHelper();
-            var theme = paletteHelper.GetTheme();
-            App app = (App)Application.Current;
-
-            switch (app.InitialTheme)
-            {
-                case BaseTheme.Dark:
-                    ModifyTheme(true);
-                    break;
-                case BaseTheme.Light:
-                    ModifyTheme(false);
-                    break;
-            }
+            SnackbarActive.SetSnackBar(Snackbar);
+            _paletteHelper = new PaletteHelper();
+            var theme = _paletteHelper.GetTheme();
 
             DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
 
-            if (paletteHelper.GetThemeManager() is { } themeManager)
-            {
-                themeManager.ThemeChanged += (_, e)
-                    => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
-            }
             DataContext = this;
             NavList =
             [
@@ -153,7 +138,7 @@ namespace Home_budget_graphic
                 MainFrame.Navigate(new HomePage());
             }
             else
-                SnackbarAtive("There is no such user or the password is incorrect");
+                SnackbarActive.WritToSnackbar("There is no such user or the password is incorrect");
         }
         private async void CreateAccount_Click(object sender, RoutedEventArgs e)
         {
@@ -166,21 +151,21 @@ namespace Home_budget_graphic
                 case 0:
                     break;
                 case 1:
-                    SnackbarAtive("Too short username");
+                    SnackbarActive.WritToSnackbar("Too short username");
                     return;
                 case 2:
-                    SnackbarAtive("Username is not available");
+                    SnackbarActive.WritToSnackbar("Username is not available");
                     return;
                 case 3:
-                    SnackbarAtive("Too short username and also not available");
+                    SnackbarActive.WritToSnackbar("Too short username and also not available");
                     return;
                 default:
                     break;
             }
             if (!_userController.Create_User_Check_Password(password))
-                SnackbarAtive("Too short password");
+                SnackbarActive.WritToSnackbar("Too short password");
             else if (password != repeatPassword)
-                SnackbarAtive("Passwords are diffrent");
+                SnackbarActive.WritToSnackbar("Passwords are diffrent");
             else
             {
                 _userController.AddUser(username, password);
@@ -192,24 +177,12 @@ namespace Home_budget_graphic
 
 
         }
-        private void SnackbarAtive(string message, float snackbarDuration = 3)
+        public static void ModifyTheme(bool isDarkTheme)
         {
-            Snackbar.MessageQueue?.Enqueue(
-               $"{message}",
-               null,
-               null,
-               null,
-               false,
-               true,
-               TimeSpan.FromSeconds(snackbarDuration));
-        }
-        private static void ModifyTheme(bool isDarkTheme)
-        {
-            var paletteHelper = new PaletteHelper();
-            var theme = paletteHelper.GetTheme();
+            var theme = _paletteHelper.GetTheme();
 
             theme.SetBaseTheme(isDarkTheme ? BaseTheme.Dark : BaseTheme.Light);
-            paletteHelper.SetTheme(theme);
+            _paletteHelper.SetTheme(theme);
         }
         private static async Task ClearAllTextBoxes(DependencyObject parent)
         {
