@@ -69,6 +69,7 @@
                                 Style="{StaticResource MaterialDesignOutlinedRevealPasswordBox}" />
                             <Button
                                 Content="Login"    
+                                ToolTip="Login"
                                 Width="150"
                                 Style="{StaticResource MaterialDesignOutlinedLightButton}"                        
                                 Click="Login_Click" HorizontalAlignment="Right" />
@@ -117,6 +118,7 @@
                             <Button
                                 Content="Create Account"    
                                 Width="150"
+                               ToolTip="Create Account"
                                 Style="{StaticResource MaterialDesignOutlinedLightButton}"                        
                                 Click="CreateAccount_Click" HorizontalAlignment="Right" />
 
@@ -153,12 +155,14 @@
                                 Content="{materialDesign:PackIcon Kind=ArrowLeft, Size=24}"
                                 Style="{StaticResource DynamicButtonStyle}"
                                 Click="BackButton_Click" 
+                                ToolTip="Navigate back"
                                 x:Name="BackButton" 
                                 Margin="-10,0,0,0"/>
                             <Button 
                                 Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark}"
                                 Margin="5,0,0,0"
                                 Content="{materialDesign:PackIcon Kind=ArrowRight,Size=24}"
+                                ToolTip="Navigatr forward"
                                 Style="{StaticResource DynamicButtonStyle}"
                                 Click="ForwardButton_Click"
                                 x:Name="ForwardButton"/>
@@ -185,6 +189,7 @@
                                          Text="Light"
                                          VerticalAlignment="Center" />
                                     <ToggleButton x:Name="DarkModeToggleButton"
+                                        ToolTip="Change Dark/Light mode"
                                         Grid.Column="1"
                                         Click="MenuDarkModeButton_Click" />
                                     <TextBlock Grid.Column="2"
@@ -196,8 +201,16 @@
                                 <Button x:Name="LogOut"
                                      Width="66"                                 
                                      Click="LogOut_Click" 
+                                     ToolTip="Log out"
                                      Style="{StaticResource MaterialDesignToolForegroundButton}"
                                      Content="{materialDesign:PackIcon Kind=Logout,Size=24}"/>
+                                <Separator/>
+                                <Button x:Name="Terminal"
+                                     Width="66" 
+                                     ToolTip="Open in terminal"
+                                     Click="TerminalStart_Click" 
+                                     Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                     Content="{materialDesign:PackIcon Kind=Terminal,Size=24}"/>
                             </StackPanel>
 
                         </materialDesign:PopupBox>

@@ -24,6 +24,7 @@
                 Margin="10"
                 Content="{materialDesign:PackIcon Kind=ArrowLeft, Size=32}"
                 Style="{StaticResource DynamicButtonStyle}"
+                ToolTip="See previous year"
                 Click="PreviousYear_Click" 
                 x:Name="PreviousYear" 
                 />
@@ -40,6 +41,7 @@
                 Height="36"
                 Foreground="{DynamicResource MaterialDesign.Brush.Primary.Dark}"
                 Margin="10"
+                ToolTip="See next year"
                 Content="{materialDesign:PackIcon Kind=ArrowRight,Size=32}"
                 Style="{StaticResource DynamicButtonStyle}"
                 Click="NextYear_Click"

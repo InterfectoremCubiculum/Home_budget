@@ -1,6 +1,7 @@
 ﻿using Home_budget_graphic.Domain;
 using Home_budget_library.Controllers;
 using MaterialDesignThemes.Wpf;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -124,6 +125,24 @@ namespace Home_budget_graphic
             LoginGrid.Visibility = Visibility.Visible;
             AppGrid.Visibility = Visibility.Hidden;
 
+        }
+        private void TerminalStart_Click(object sender, RoutedEventArgs e) 
+        {
+            try
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "Home_budget.exe",
+                    UseShellExecute = true
+                };
+                Process.Start(startInfo);
+
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Console app error, not found in the same folder {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         private async void Login_Click(object sender, RoutedEventArgs e)
         {
