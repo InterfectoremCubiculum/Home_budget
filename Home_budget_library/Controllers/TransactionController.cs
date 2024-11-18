@@ -8,6 +8,7 @@ namespace Home_budget_library.Controllers
         public TransactionController()
         {
             _context = new HomeBudgetDbContext();
+            AddCategories();
         }
         public void Add(int userID, string title, decimal value, DateOnly date, string description, int categoryID)
         {
@@ -118,6 +119,31 @@ namespace Home_budget_library.Controllers
         public List<Category> GetAllCategories()
         {
             return _context.Categories.ToList();
+        }
+
+
+
+
+        public void AddCategories()
+        {
+            if (!_context.Categories.Any())
+            {
+                var categories = new List<Category>
+                {
+                    new Category { Name = "Groceries" },
+                    new Category { Name = "Utilities" },
+                    new Category { Name = "Entertainment" },
+                    new Category { Name = "Transportation" },
+                    new Category { Name = "Health" },
+                    new Category { Name = "Rent" },
+                    new Category { Name = "Food" },
+                    new Category { Name = "Investments" },
+                    new Category { Name = "Incomes" },
+                    new Category { Name = "Gambling" }
+                };
+                _context.Categories.AddRange(categories);
+                _context.SaveChanges();
+            }
         }
     }
 }
